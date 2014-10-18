@@ -2,13 +2,13 @@ package edu.arizona.biosemantics.common.taxonomy;
 
 import java.util.LinkedList;
 
-public class TaxonName {
+public class TaxonIdentification {
 	
 	private LinkedList<RankData> rankData;
 	private String author;
 	private String date;
 
-	public TaxonName(LinkedList<RankData> rankData, String author, String date) {
+	public TaxonIdentification(LinkedList<RankData> rankData, String author, String date) {
 		super();
 		this.rankData = rankData;
 		this.author = author;
