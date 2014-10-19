@@ -1,8 +1,9 @@
 package edu.arizona.biosemantics.common.taxonomy;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class TaxonIdentification {
+public class TaxonIdentification implements Serializable {
 	
 	private LinkedList<RankData> rankData;
 	private String author;

@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.common.taxonomy;
 
-public class RankData implements Comparable<RankData> {
+import java.io.Serializable;
+
+public class RankData implements Comparable<RankData>, Serializable {
 	
 	private Rank rank = Rank.UNRANKED;
 	private String name;

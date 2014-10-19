@@ -1,9 +1,10 @@
 package edu.arizona.biosemantics.common.taxonomy;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Taxon {
+public class Taxon implements Serializable {
 
 	private TaxonIdentification taxonIdentification;
 	private Taxon parent;
