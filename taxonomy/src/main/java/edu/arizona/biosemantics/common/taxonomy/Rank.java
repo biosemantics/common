@@ -43,9 +43,9 @@ public enum Rank implements Serializable {
 	SUPERSTRAIN(37),
 	STRAIN(38),
 	SUBSTRAIN(39),
-	SUPER_TYPE_STRAIN(40),
-	TYPE_STRAIN(41),
-	SUB_TYPE_STRAIN(42),
+	SUPERTYPESTRAIN(40),
+	TYPESTRAIN(41),
+	SUBTYPESTRAIN(42),
 	SUPERVARIETY(43), 
 	VARIETY(44), 
 	SUBVARIETAS(45),
@@ -86,5 +86,11 @@ public enum Rank implements Serializable {
 
 	public static boolean aboveGenus(Rank level) {
 		return level.getId() < GENUS.getId();
+	}
+	
+	public static Rank nextRank(Rank rank) {
+		if(rank.getId() + 1 < Rank.values().length - 1)
+			return Rank.values()[rank.getId() + 1];
+		return null;
 	}
 }
