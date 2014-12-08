@@ -17,7 +17,7 @@ public class FileSearcher implements Searcher {
 
 	public FileSearcher(Ontology ontology, String ontologyDir, String dictDir) {
 		this.ontology = ontology;
-		this.ontologyLookupClient = new OntologyLookupClient(ontology.toString(), ontologyDir, dictDir);
+		this.ontologyLookupClient = new OntologyLookupClient(ontology.toString().toLowerCase(), ontologyDir, dictDir);
 	}
 	
 	public List<OntologyEntry> getEntries(String term) {
