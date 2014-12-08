@@ -11,25 +11,25 @@ public class TaxonGroupOntology {
 
 	public static Set<Ontology> getOntologies(TaxonGroup taxonGroup) {
 		switch(taxonGroup) {
-		case Algae:
+		case ALGAE:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
-		case Cnidaria:
+		case CNIDARIA:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
-		case Fossil:
+		case FOSSIL:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] {  
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
-		case Gastropods:
+		case GASTROPODS:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
-		case Hymenoptera:
+		case HYMENOPTERA:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { Ontology.HAO, 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
-		case Plant:
+		case PLANT:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { Ontology.PO, 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
-		case Porifera:
+		case PORIFERA:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { Ontology.PORO, 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
 		}
