@@ -20,6 +20,10 @@ public class OntologyEntry implements Comparable<OntologyEntry> {
 	public String getClassIRI() {
 		return iri;
 	}
+	
+	public double getScore() {
+		return score;
+	}
 
 	public int compareTo(OntologyEntry o) {
 		return new Double(this.score).compareTo(new Double(o.score));
