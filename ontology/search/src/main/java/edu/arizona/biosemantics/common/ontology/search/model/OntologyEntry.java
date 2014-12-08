@@ -2,16 +2,18 @@ package edu.arizona.biosemantics.common.ontology.search.model;
 
 public class OntologyEntry {
 
-	private String ontology;
+	private double score;
+	private Ontology ontology;
 	private String iri;
 	
-	public OntologyEntry(String ontology, String iri) {
+	public OntologyEntry(Ontology ontology, String iri, double score) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;
+		this.score = score;
 	}
 
-	public String getOntology() {
+	public Ontology getOntology() {
 		return ontology;
 	}
 

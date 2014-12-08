@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.common.ontology.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.arizona.biosemantics.common.ontology.search.model.Ontology;
 import edu.arizona.biosemantics.common.ontology.search.model.OntologyEntry;
 import edu.arizona.biosemantics.oto.common.ontologylookup.search.OntologyLookupClient;
 import edu.arizona.biosemantics.oto.common.ontologylookup.search.data.Entity;
@@ -11,11 +12,11 @@ import edu.arizona.biosemantics.oto.common.ontologylookup.search.data.EntityProp
 public class FileSearcher implements Searcher {
 
 	private OntologyLookupClient ontologyLookupClient;
-	private String ontologyName;
+	private Ontology ontology;
 
-	public FileSearcher(String ontologyName, String ontologyDir, String dictDir) {
-		this.ontologyName = ontologyName;
-		this.ontologyLookupClient = new OntologyLookupClient(ontologyName, ontologyDir, dictDir);
+	public FileSearcher(Ontology ontology, String ontologyDir, String dictDir) {
+		this.ontology = ontology;
+		this.ontologyLookupClient = new OntologyLookupClient(ontology.toString(), ontologyDir, dictDir);
 	}
 	
 	public List<OntologyEntry> getEntries(String term) {
@@ -26,7 +27,7 @@ public class FileSearcher implements Searcher {
 		List<EntityProposals> entityProposals = this.ontologyLookupClient.searchStrucutre(term);
 		
 		for(Entity entity : entityProposals.get(0).getProposals()) {
-			result.add(new OntologyEntry(ontologyName, entity.getClassIRI()));
+			result.add(new OntologyEntry(ontology, entity.getClassIRI(), (double)entity.getConfidenceScore()));
 		}
 		
 		return result;
