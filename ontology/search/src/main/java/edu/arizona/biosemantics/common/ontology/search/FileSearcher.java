@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.common.ontology.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.arizona.biosemantics.common.ontology.search.model.Ontology;
@@ -30,6 +31,7 @@ public class FileSearcher implements Searcher {
 			result.add(new OntologyEntry(ontology, entity.getClassIRI(), (double)entity.getConfidenceScore()));
 		}
 		
+		Collections.sort(result);
 		return result;
 	}
 
