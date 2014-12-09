@@ -27,8 +27,10 @@ public class FileSearcher implements Searcher {
 		//This is all construction zone to find out use cases of a Searcher of ontologies we have
 		List<EntityProposals> entityProposals = this.ontologyLookupClient.searchStrucutre(term);
 		
-		for(Entity entity : entityProposals.get(0).getProposals()) {
-			result.add(new OntologyEntry(ontology, entity.getClassIRI(), (double)entity.getConfidenceScore()));
+		if(entityProposals != null && !entityProposals.isEmpty()) {
+			for(Entity entity : entityProposals.get(0).getProposals()) {
+				result.add(new OntologyEntry(ontology, entity.getClassIRI(), (double)entity.getConfidenceScore()));
+			}
 		}
 		
 		Collections.sort(result);
