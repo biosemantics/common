@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.common.taxonomy.log;
+package edu.arizona.biosemantics.common.ontology.search.log;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -11,8 +11,8 @@ import edu.arizona.biosemantics.common.log.ObjectStringifier;
 @Aspect
 public class TraceInjection {
 
-	@Before("within(edu.arizona.biosemantics.common.taxonomy..*) && "
-			+ "!within(edu.arizona.biosemantics.common.taxonomy.log..*) && "
+	@Before("within(edu.arizona.biosemantics.common.ontology.search..*) && "
+			+ "!within(edu.arizona.biosemantics.common.ontology.search.log..*) && "
 			+ "execution(public * *(..))")
 	public void trace(JoinPoint joinPoint) {
 		Signature sig = joinPoint.getSignature();

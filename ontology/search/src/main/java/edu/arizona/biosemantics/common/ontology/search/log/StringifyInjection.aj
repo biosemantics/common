@@ -14,6 +14,6 @@ public aspect StringifyInjection extends AbstractStringifyInjection {
 	/**
 	 * IPrintables are specified
 	 */
-	declare parents : edu.arizona.biosemantics.common.taxonomy.* implements IPrintable;
+	declare parents : edu.arizona.biosemantics.common.ontology.search.* implements IPrintable;
 
 }

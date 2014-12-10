@@ -13,7 +13,7 @@ public aspect LogInjection extends AbstractLogInjection {
 	/**
 	 * ILoggable classes are specified below
 	 */
-	declare parents : edu.arizona.biosemantics.common.taxonomy.* implements ILoggable;
-	declare parents : edu.arizona.biosemantics.common.taxonomy.log.TraceInjection implements ILoggable;
+	declare parents : edu.arizona.biosemantics.common.ontology.search.* implements ILoggable;
+	declare parents : edu.arizona.biosemantics.common.ontology.search.log.TraceInjection implements ILoggable;
 
 }
