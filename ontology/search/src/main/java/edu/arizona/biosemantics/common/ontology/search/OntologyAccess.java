@@ -73,6 +73,20 @@ public class OntologyAccess {
 		return result;
 	}
 	
+	public Set<OWLClass> getDescendants(OWLClass owlClass) {
+		Set<OWLClass> result = new HashSet<OWLClass>();
+		for(OWLReasoner reasoner : ontologyReasonerMap.values()) {
+			NodeSet<OWLClass> descendantNodes = reasoner.getSubClasses(owlClass, false);
+			
+			for(Node<OWLClass> descendantNode : descendantNodes) {
+				OWLClass descendant = descendantNode.getRepresentativeElement();
+				if(!descendant.isBottomEntity() && !descendant.isTopEntity())
+					result.add(descendant);
+			}
+		}
+		return result;
+	}
+	
 	public Set<OWLClass> getBearers(OWLClass owlClass) {
 		Set<OWLClass> result = new HashSet<OWLClass>();
 		for(OWLReasoner reasoner : ontologyReasonerMap.values()) {
