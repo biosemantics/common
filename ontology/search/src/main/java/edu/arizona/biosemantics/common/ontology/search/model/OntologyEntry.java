@@ -2,14 +2,20 @@ package edu.arizona.biosemantics.common.ontology.search.model;
 
 public class OntologyEntry implements Comparable<OntologyEntry> {
 
+	public static enum Type {
+		ENTITY
+	}
+	
 	private double score;
 	private Ontology ontology;
 	private String iri;
+	private Type type;
 	
-	public OntologyEntry(Ontology ontology, String iri, double score) {
+	public OntologyEntry(Ontology ontology, String iri, Type type, double score) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;
+		this.type = type;
 		this.score = score;
 	}
 
@@ -23,6 +29,10 @@ public class OntologyEntry implements Comparable<OntologyEntry> {
 	
 	public double getScore() {
 		return score;
+	}
+
+	public Type getType() {
+		return type;
 	}
 
 	public int compareTo(OntologyEntry o) {

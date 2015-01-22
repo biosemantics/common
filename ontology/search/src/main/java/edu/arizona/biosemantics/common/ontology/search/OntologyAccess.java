@@ -1,8 +1,11 @@
 package edu.arizona.biosemantics.common.ontology.search;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
@@ -12,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -21,6 +25,8 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
+
+import edu.arizona.biosemantics.common.log.LogLevel;
 
 public class OntologyAccess {
 
@@ -123,5 +129,41 @@ public class OntologyAccess {
 		 */
 		return origin.replaceAll("\\^\\^xsd:string", "").replaceAll("\"", "")
 				.replaceAll("\\.", "").replaceFirst("@.*", ""); //remove lang info @en
+	}
+	
+	//possibly want to cache the read in results once, similar to old ontologysearcher / termsearcher
+	public IRI getIRIForLabel(String label) {
+		for(OWLOntology ontology : ontologies) {
+			for (OWLClass owlClass : ontology.getClassesInSignature()) {
+				for (OWLAnnotation annotation : owlClass.getAnnotations(ontology, owlDataFactory.getRDFSLabel())) {
+					if (annotation.getValue() instanceof OWLLiteral) {
+						OWLLiteral val = (OWLLiteral) annotation.getValue();
+						if(val.getLiteral().equals(label)) {
+							return owlClass.getIRI();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	public static void main(String[] args) {
+		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
+		OWLOntologyManager owlOntologyManager = OWLManager.createOWLOntologyManager();
+		OWLDataFactory owlDataFactory = owlOntologyManager.getOWLDataFactory();
+		
+		File ontologyDirectory = new File("C:/Users/rodenhausen/etcsite/ontologies");
+		for(File ontologyFile : ontologyDirectory.listFiles()) {
+			try {
+				OWLOntology ontology = owlOntologyManager.loadOntologyFromOntologyDocument(ontologyFile);
+				ontologies.add(ontology);
+			} catch (OWLOntologyCreationException e) {
+				e.printStackTrace();
+			}
+		}
+		OntologyAccess ontologyAccess = new OntologyAccess(ontologies);
+		System.out.println(ontologyAccess.getIRIForLabel("axil"));
 	}
 }
