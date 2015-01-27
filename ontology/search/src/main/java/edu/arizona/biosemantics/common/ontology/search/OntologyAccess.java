@@ -49,8 +49,12 @@ public class OntologyAccess {
 	}
 	
 	public String getLabel(OWLClass owlClass) {
-		OWLAnnotation label = (OWLAnnotation) this.getLabels(owlClass).toArray()[0];
-		return this.getRefinedOutput(label.getValue().toString());
+		Set<OWLAnnotation> labels = this.getLabels(owlClass);
+		if(!labels.isEmpty()) {
+			OWLAnnotation label = (OWLAnnotation) labels.iterator().next();
+			return this.getRefinedOutput(label.getValue().toString());
+		}
+		return null;
 	}
 	
 	public Set<OWLAnnotation> getLabels(OWLClass c) {

@@ -64,7 +64,7 @@ public class FileSearcher implements Searcher {
 	
 	public static void main(String[] args) {
 		FileSearcher fileSearcher = new FileSearcher(Ontology.PO, "C:/Users/rodenhausen/etcsite/ontologies", "C:/gitEtc/charaparser/wordnet/wn31/dict");
-		List<OntologyEntry> entries = fileSearcher.getEntries("axil");
+		List<OntologyEntry> entries = fileSearcher.getEntries("axil", Type.ENTITY);
 		System.out.println(entries.size());
 		for(OntologyEntry entry : entries) {
 			System.out.println(entry.getClassIRI());
