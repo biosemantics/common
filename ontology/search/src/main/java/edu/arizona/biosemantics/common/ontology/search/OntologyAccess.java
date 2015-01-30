@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -46,6 +47,15 @@ public class OntologyAccess {
 		ontologyReasonerMap = new HashMap<OWLOntology, OWLReasoner>();
 		for(OWLOntology ontology : ontologies)
 			ontologyReasonerMap.put(ontology, reasonerFactory.createReasoner(ontology));
+	}
+	
+	public OWLEntity getOWLEntityForIRI(String iri) {
+		for(OWLOntology ontology : ontologies) {
+			Set<OWLEntity> result = ontology.getEntitiesInSignature(IRI.create(iri));
+			if(!result.isEmpty())
+				return result.iterator().next();
+		}
+		return null;
 	}
 	
 	public String getLabel(OWLClass owlClass) {
