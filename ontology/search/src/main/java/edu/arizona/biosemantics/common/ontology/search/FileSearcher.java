@@ -33,16 +33,16 @@ public class FileSearcher implements Searcher {
 		
 		//Only search structures for now leveraging ontologylookup client
 		//This is all construction zone to find out use cases of a Searcher of ontologies we have
-		/*try {
+		try {
 			List<EntityProposals> entityProposals = this.ontologyLookupClient.searchStrucutre(term);
 			if(entityProposals != null && !entityProposals.isEmpty()) {
 				for(Entity entity : entityProposals.get(0).getProposals()) {
-					result.add(new OntologyEntry(ontology, entity.getClassIRI(), entity.get(double)entity.getConfidenceScore()));
+					result.add(new OntologyEntry(ontology, entity.getClassIRI(), Type.ENTITY, entity.getConfidenceScore()));
 				}
 			}
 		} catch(Throwable t) {
 			log(LogLevel.ERROR, "Problem invoking oto-common code", t);
-		}*/
+		}
 		
 		Collections.sort(result);
 		return result;
