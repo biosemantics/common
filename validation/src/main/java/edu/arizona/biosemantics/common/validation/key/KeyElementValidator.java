@@ -54,6 +54,7 @@ public class KeyElementValidator {
 	 */
 
 	public boolean validate(Element key, ArrayList<String> errors){
+		if(key==null || errors ==null) return false; 
 		boolean hasError = false;
 		ArrayList<String> nextIds = new ArrayList<String>();
 		String firstId = stateIdPath.evaluateFirst(key).getTextNormalize();
