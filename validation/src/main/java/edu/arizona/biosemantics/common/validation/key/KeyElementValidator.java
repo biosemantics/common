@@ -53,7 +53,8 @@ public class KeyElementValidator {
 	 * @return
 	 */
 
-	private boolean validate(Element key) {
+	public boolean validate(Element key, ArrayList<String> errors){
+		boolean hasError = false;
 		ArrayList<String> nextIds = new ArrayList<String>();
 		String firstId = stateIdPath.evaluateFirst(key).getTextNormalize();
 		//collect all ids
@@ -68,15 +69,18 @@ public class KeyElementValidator {
 			String nextId = nextStatement.getTextNormalize();
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
-				log(LogLevel.DEBUG, "next id is the same as the first id: "+firstId);
-				System.out.println("next id is the same as the first id: "+firstId);
-				return false;
+				errors.add("next id is the same as the first id "+firstId);
+				hasError = true;
+				log(LogLevel.DEBUG, "next id is the same as the first id "+firstId);
+				
+				//return false;
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
-				log(LogLevel.DEBUG, "a destination can not be found for next id: "+nextId);
-				System.out.println("a destination can not be found for next id: "+nextId);
-				return false;
+				errors.add("a destination can not be found for id "+nextId);
+				hasError = true;
+				log(LogLevel.DEBUG, "a destination can not be found for id "+nextId);
+				//return false;
 			}
 			/*if(nextIds.contains(nextId)){
 				log(LogLevel.DEBUG, "next id "+nextId+" is referred twice"); //this is a warning, having this doesn't always mean the key is bad
@@ -90,18 +94,17 @@ public class KeyElementValidator {
 			for(String id: ids){
 				extraIds += id+", ";
 			}
+			errors.add("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
+			hasError = true;
 			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			System.out.println("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			return false;
+			//return false;
 		}
 		ArrayList<String> idsInPath = new ArrayList<String> ();
-		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key)){
-			log(LogLevel.DEBUG, "the key contains a loop");
-			System.out.println("the key contains a loop");
-			return false;
+		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key, errors)){
+			hasError = true;
+			//return false;
 		}
-
-		return true;
+		return hasError? false : true;
 	}
 
 
@@ -118,8 +121,8 @@ public class KeyElementValidator {
 	 */
 
 	@SuppressWarnings("unchecked")
-	private boolean containsLoop(ArrayList<Element> statements, ArrayList<String> idsInPath, Element key) {
-
+	private boolean containsLoop(ArrayList<Element> statements, ArrayList<String> idsInPath, Element key, ArrayList<String> errors) {
+		boolean hasLoop = false;
 		for(Element statement: statements){
 			ArrayList<String> idsInThisPath = (ArrayList<String>) idsInPath.clone();
 			idsInThisPath.add(statement.getChildTextNormalize("statement_id"));
@@ -127,17 +130,22 @@ public class KeyElementValidator {
 			if(next!=null){
 				String nextId = next.getTextNormalize();
 				if(idsInThisPath.contains(nextId)){
-					log(LogLevel.DEBUG, "Id "+ nextId+" creates a loop in the key");
-					System.out.println("Id "+ nextId+" creates a loop in the key");
-					return true;
+					errors.add("id "+ nextId+" creates a loop in the key");
+					hasLoop = true;
+					log(LogLevel.DEBUG, "id "+ nextId+" creates a loop in the key");
+					//return true;
+				}else{
+					idsInThisPath.add(nextId);				
+					ArrayList<Element> nextStop = getKeyStatements(nextId, key);
+					if(containsLoop(nextStop, idsInThisPath, key, errors)){
+						hasLoop = true;
+						//return true;
+					}
 				}
-				else idsInThisPath.add(nextId);
-				ArrayList<Element> nextStop = getKeyStatements(nextId, key);
-				if(containsLoop(nextStop, idsInThisPath, key))
-					return true;
 			}
 		}
-		return false;
+		return hasLoop? true : false;
+		//return false;
 	}
 
 	/**
@@ -167,8 +175,12 @@ public class KeyElementValidator {
 			Element rootNode = document.getRootElement();
 			XPathExpression<Element> keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			for(Element key: keyPath.evaluate(rootNode)){
-				if(!kev.validate(key)){
-					System.out.println("key is not valid");
+				ArrayList<String> errors = new ArrayList<String>();
+				if(!kev.validate(key, errors)){
+					System.out.println("errors in the key: ");
+					for(String error: errors){
+						System.out.println(error);
+					}
 				}
 			}
 		  }catch(Exception e){
