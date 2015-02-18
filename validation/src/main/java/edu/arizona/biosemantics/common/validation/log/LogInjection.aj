@@ -14,6 +14,7 @@ public aspect LogInjection extends AbstractLogInjection {
 	 * ILoggable classes are specified below
 	 */
 	declare parents : edu.arizona.biosemantics.common.validation.* implements ILoggable;
+	declare parents : edu.arizona.biosemantics.common.validation.key.* implements ILoggable;
 	declare parents : edu.arizona.biosemantics.common.validation.log.TraceInjection implements ILoggable;
 
 }

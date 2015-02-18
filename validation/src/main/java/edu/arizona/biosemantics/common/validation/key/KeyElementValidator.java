@@ -3,11 +3,15 @@
  */
 package edu.arizona.biosemantics.common.validation.key;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
@@ -17,29 +21,24 @@ import edu.arizona.biosemantics.common.log.LogLevel;
  * @author hong cui
  *
  */
-public class KeyElementValidation {
+public class KeyElementValidator {
 	static XPathFactory fac = null;
-	static XPathExpression<Element> keyPath = null;
-	//static XPathExpression<Element> detPath = null;
+	
 	static XPathExpression<Element> nextIdPath = null;
 	static XPathExpression<Element> stateIdPath = null;
-	//static XPathExpression<Element> namePath = null;
 	static XPathExpression<Element> keyStatePath = null;
 
 	static{
 		fac = XPathFactory.instance();
-		keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-		//detPath = fac.compile("//key//determination", Filters.element());
 		nextIdPath = fac.compile("//key//next_statement_id", Filters.element());
 		stateIdPath = fac.compile("//key//statement_id", Filters.element());
-		//namePath = fac.compile("//bio:treatment/taxon_identification[@status='ACCEPTED']", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 		keyStatePath = fac.compile("//key//key_statement", Filters.element());
 	}
 
 	/**
 	 * 
 	 */
-	public KeyElementValidation() {
+	public KeyElementValidator() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -54,11 +53,11 @@ public class KeyElementValidation {
 	 * @return
 	 */
 
-	private boolean isGoodKey(Element key) {
+	private boolean validate(Element key) {
 		ArrayList<String> nextIds = new ArrayList<String>();
 		String firstId = stateIdPath.evaluateFirst(key).getTextNormalize();
 		//collect all ids
-		ArrayList<String> ids = new ArrayList<String> ();
+		HashSet<String> ids = new HashSet<String> ();
 		for(Element id: this.stateIdPath.evaluate(key)){
 			ids.add(id.getTextNormalize());
 		}
@@ -69,12 +68,14 @@ public class KeyElementValidation {
 			String nextId = nextStatement.getTextNormalize();
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
-				log(LogLevel.DEBUG, "next id is the same as the first id :"+firstId);
+				log(LogLevel.DEBUG, "next id is the same as the first id: "+firstId);
+				System.out.println("next id is the same as the first id: "+firstId);
 				return false;
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
-				log(LogLevel.DEBUG, "a destination can not be found for next id :"+nextId);
+				log(LogLevel.DEBUG, "a destination can not be found for next id: "+nextId);
+				System.out.println("a destination can not be found for next id: "+nextId);
 				return false;
 			}
 			/*if(nextIds.contains(nextId)){
@@ -89,12 +90,14 @@ public class KeyElementValidation {
 			for(String id: ids){
 				extraIds += id+", ";
 			}
-			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" are not referenced");
+			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
+			System.out.println("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 			return false;
 		}
 		ArrayList<String> idsInPath = new ArrayList<String> ();
 		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key)){
 			log(LogLevel.DEBUG, "the key contains a loop");
+			System.out.println("the key contains a loop");
 			return false;
 		}
 
@@ -124,7 +127,8 @@ public class KeyElementValidation {
 			if(next!=null){
 				String nextId = next.getTextNormalize();
 				if(idsInThisPath.contains(nextId)){
-					log(LogLevel.DEBUG, nextId+" creats a loop in the key");
+					log(LogLevel.DEBUG, "Id "+ nextId+" creates a loop in the key");
+					System.out.println("Id "+ nextId+" creates a loop in the key");
 					return true;
 				}
 				else idsInThisPath.add(nextId);
@@ -155,7 +159,21 @@ public class KeyElementValidation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		String filePath ="C:\\Users\\updates\\CharaParserTest\\CharaParserUpdating\\RubusGray\\482_family_rosaceae_tribe_rubeae_genus_rubus_subgenus_eubatus.corrected.xml";
+		SAXBuilder builder = new SAXBuilder();
+		KeyElementValidator kev = new KeyElementValidator();
+		try {
+			Document document = (Document) builder.build(new File(filePath));
+			Element rootNode = document.getRootElement();
+			XPathExpression<Element> keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+			for(Element key: keyPath.evaluate(rootNode)){
+				if(!kev.validate(key)){
+					System.out.println("key is not valid");
+				}
+			}
+		  }catch(Exception e){
+			  e.printStackTrace();
+		  }
 
 	}
 
