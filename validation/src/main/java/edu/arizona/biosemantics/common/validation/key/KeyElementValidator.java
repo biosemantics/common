@@ -30,9 +30,12 @@ public class KeyElementValidator {
 
 	static{
 		fac = XPathFactory.instance();
-		nextIdPath = fac.compile("//key//next_statement_id", Filters.element());
+		nextIdPath = fac.compile(".//next_statement_id", Filters.element()); //must use . to limit the selection to the current key element
+		stateIdPath = fac.compile(".//statement_id", Filters.element());
+		keyStatePath = fac.compile(".//key_statement", Filters.element());
+		/*nextIdPath = fac.compile("//key//next_statement_id", Filters.element());
 		stateIdPath = fac.compile("//key//statement_id", Filters.element());
-		keyStatePath = fac.compile("//key//key_statement", Filters.element());
+		keyStatePath = fac.compile("//key//key_statement", Filters.element());*/
 	}
 
 	/**
@@ -55,9 +58,16 @@ public class KeyElementValidator {
 
 	public boolean validate(Element key, ArrayList<String> errors){
 		if(key==null || errors ==null) return false; 
+		Element stateId = stateIdPath.evaluateFirst(key);
+		if(stateId == null){
+			errors.add("no statement id found");
+			return false;
+		}
+		
+		String firstId = stateId.getTextNormalize();
 		boolean hasError = false;
 		ArrayList<String> nextIds = new ArrayList<String>();
-		String firstId = stateIdPath.evaluateFirst(key).getTextNormalize();
+		
 		//collect all ids
 		HashSet<String> ids = new HashSet<String> ();
 		for(Element id: this.stateIdPath.evaluate(key)){
@@ -68,6 +78,7 @@ public class KeyElementValidator {
 		//check the conditions 
 		for(Element nextStatement: nextIdPath.evaluate(key)){
 			String nextId = nextStatement.getTextNormalize();
+			//log(LogLevel.DEBUG, "checking nextid "+nextId);
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
 				errors.add("next id is the same as the first id "+firstId);
@@ -130,6 +141,7 @@ public class KeyElementValidator {
 			Element next = statement.getChild("next_statement_id");
 			if(next!=null){
 				String nextId = next.getTextNormalize();
+				//log(LogLevel.DEBUG, "checking nextid "+nextId+" for any loop");
 				if(idsInThisPath.contains(nextId)){
 					errors.add("id "+ nextId+" creates a loop in the key");
 					hasLoop = true;
