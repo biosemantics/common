@@ -27,12 +27,16 @@ public class KeyElementValidator {
 	static XPathExpression<Element> nextIdPath = null;
 	static XPathExpression<Element> stateIdPath = null;
 	static XPathExpression<Element> keyStatePath = null;
-
+	static XPathExpression<Element> keyHeadPath = null;
+	static XPathExpression<Element> detPath = null;
+	
 	static{
 		fac = XPathFactory.instance();
 		nextIdPath = fac.compile(".//next_statement_id", Filters.element()); //must use . to limit the selection to the current key element
 		stateIdPath = fac.compile(".//statement_id", Filters.element());
 		keyStatePath = fac.compile(".//key_statement", Filters.element());
+		keyHeadPath = fac.compile(".//key_head", Filters.element());
+		detPath = fac.compile(".//determination", Filters.element());
 		/*nextIdPath = fac.compile("//key//next_statement_id", Filters.element());
 		stateIdPath = fac.compile("//key//statement_id", Filters.element());
 		keyStatePath = fac.compile("//key//key_statement", Filters.element());*/
@@ -52,12 +56,27 @@ public class KeyElementValidator {
 	 * 3. next_statement_id == first id used in statement ids (not possible)
 	 * 4. some next_statement_ids can not be matched to a statement id
 	 * 5. statement ids (except the firstId) are not referred by a next_statement_id
+	 * 6. contains more than one key_head element
+	 * 7. a determination contains unmatched brackets
 	 * @param key
 	 * @return
 	 */
 
 	public boolean validate(Element key, ArrayList<String> errors){
 		if(key==null || errors ==null) return false; 
+		
+		if(keyHeadPath.evaluate(key).size()>1){
+			errors.add("too many key_head in the key, allows only one");
+			return false;
+		}
+		
+		for(Element det: detPath.evaluate(key)){
+			if(det.getTextNormalize().replaceAll("[^(){}\\[\\]]", "").length() % 2 !=0){
+				errors.add("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
+				return false;
+			}
+		}
+		
 		Element stateId = stateIdPath.evaluateFirst(key);
 		if(stateId == null){
 			errors.add("no statement id found");
