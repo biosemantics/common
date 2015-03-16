@@ -67,12 +67,14 @@ public class KeyElementValidator {
 		
 		if(keyHeadPath.evaluate(key).size()>1){
 			errors.add("too many key_head in the key, allows only one");
+			log(LogLevel.DEBUG, "too many key_head in the key, allows only one");
 			return false;
 		}
 		
 		for(Element det: detPath.evaluate(key)){
 			if(det.getTextNormalize().replaceAll("[^(){}\\[\\]]", "").length() % 2 !=0){
 				errors.add("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
+				log(LogLevel.DEBUG,"unmatched brackets () [] {} in determination: "+det.getTextNormalize());
 				return false;
 			}
 		}
@@ -80,6 +82,7 @@ public class KeyElementValidator {
 		Element stateId = stateIdPath.evaluateFirst(key);
 		if(stateId == null){
 			errors.add("no statement id found");
+			log(LogLevel.DEBUG,"no statement id found");
 			return false;
 		}
 		
