@@ -1,10 +1,14 @@
 package edu.arizona.biosemantics.common.biology;
 
-public enum TaxonGroup {
+import java.io.Serializable;
+
+public enum TaxonGroup implements Serializable {
 	
 	ALGAE("Algae"), CNIDARIA("Cnidaria"), FOSSIL("Fossil"), GASTROPODS("Gastropods"), HYMENOPTERA("Hymenoptera"), PLANT("Plant"), PORIFERA("Porifera");
 	
 	private String displayName;
+	
+	TaxonGroup() { }
 	
 	TaxonGroup(String displayName) {
 		this.displayName = displayName;
