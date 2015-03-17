@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.common.files;
+package edu.arizona.biosemantics.common.taxonomy;
 
 import java.io.Serializable;
 
