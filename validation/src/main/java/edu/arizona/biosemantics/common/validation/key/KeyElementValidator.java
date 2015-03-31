@@ -4,11 +4,13 @@
 package edu.arizona.biosemantics.common.validation.key;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
@@ -62,20 +64,18 @@ public class KeyElementValidator {
 	 * @return
 	 */
 
-	public boolean validate(Element key, ArrayList<String> errors){
+	public boolean validate(Element key, ArrayList<String> errors) throws KeyValidationException{
 		if(key==null || errors ==null) return false; 
-		
 		if(keyHeadPath.evaluate(key).size()>1){
 			errors.add("too many key_head in the key, allows only one");
 			log(LogLevel.DEBUG, "too many key_head in the key, allows only one");
-			return false;
+			throw new KeyValidationException("Too many key_head in the key, allows only one.");
 		}
-		
 		for(Element det: detPath.evaluate(key)){
 			if(det.getTextNormalize().replaceAll("[^(){}\\[\\]]", "").length() % 2 !=0){
 				errors.add("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
 				log(LogLevel.DEBUG,"unmatched brackets () [] {} in determination: "+det.getTextNormalize());
-				return false;
+				throw new KeyValidationException("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
 			}
 		}
 		
@@ -83,10 +83,11 @@ public class KeyElementValidator {
 		if(stateId == null){
 			errors.add("no statement id found");
 			log(LogLevel.DEBUG,"no statement id found");
-			return false;
+			throw new KeyValidationException("no statement id found");
 		}
 		
 		String firstId = stateId.getTextNormalize();
+		KeyValidationException exception = new KeyValidationException();
 		boolean hasError = false;
 		ArrayList<String> nextIds = new ArrayList<String>();
 		
@@ -106,15 +107,14 @@ public class KeyElementValidator {
 				errors.add("next id is the same as the first id "+firstId);
 				hasError = true;
 				log(LogLevel.DEBUG, "next id is the same as the first id "+firstId);
-				
-				//return false;
+				exception.addError("next id is the same as the first id "+firstId);
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
 				errors.add("a destination can not be found for id "+nextId);
 				hasError = true;
 				log(LogLevel.DEBUG, "a destination can not be found for id "+nextId);
-				//return false;
+				exception.addError("a destination can not be found for id "+nextId);
 			}
 			/*if(nextIds.contains(nextId)){
 				log(LogLevel.DEBUG, "next id "+nextId+" is referred twice"); //this is a warning, having this doesn't always mean the key is bad
@@ -129,16 +129,17 @@ public class KeyElementValidator {
 				extraIds += id+", ";
 			}
 			errors.add("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			hasError = true;
 			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			//return false;
+			exception.addError("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 		}
 		ArrayList<String> idsInPath = new ArrayList<String> ();
-		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key, errors)){
+		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key, exception)){
 			hasError = true;
-			//return false;
 		}
-		return hasError? false : true;
+		if(hasError){
+			throw exception;
+		}
+		return true;
 	}
 
 
@@ -155,7 +156,7 @@ public class KeyElementValidator {
 	 */
 
 	@SuppressWarnings("unchecked")
-	private boolean containsLoop(ArrayList<Element> statements, ArrayList<String> idsInPath, Element key, ArrayList<String> errors) {
+	private boolean containsLoop(ArrayList<Element> statements, ArrayList<String> idsInPath, Element key, KeyValidationException errors) throws KeyValidationException {
 		boolean hasLoop = false;
 		for(Element statement: statements){
 			ArrayList<String> idsInThisPath = (ArrayList<String>) idsInPath.clone();
@@ -165,7 +166,7 @@ public class KeyElementValidator {
 				String nextId = next.getTextNormalize();
 				//log(LogLevel.DEBUG, "checking nextid "+nextId+" for any loop");
 				if(idsInThisPath.contains(nextId)){
-					errors.add("id "+ nextId+" creates a loop in the key");
+					errors.addError("id "+ nextId+" creates a loop in the key");
 					hasLoop = true;
 					log(LogLevel.DEBUG, "id "+ nextId+" creates a loop in the key");
 					//return true;
@@ -180,7 +181,6 @@ public class KeyElementValidator {
 			}
 		}
 		return hasLoop? true : false;
-		//return false;
 	}
 
 	/**
@@ -200,7 +200,25 @@ public class KeyElementValidator {
 	}
 	/**
 	 * @param args
+	 * @throws KeyValidationException 
 	 */
+	
+	public boolean validate(String filePath) throws KeyValidationException{
+		SAXBuilder builder = new SAXBuilder();
+		Document document;
+		try {
+			document = (Document) builder.build(new File(filePath));
+			Element rootNode = document.getRootElement();
+			XPathExpression<Element> keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+			for(Element key: keyPath.evaluate(rootNode)){
+				ArrayList<String> errors = new ArrayList<String>();
+				validate(key, errors);
+			}
+		} catch (JDOMException | IOException e) {
+			return false;
+		}
+		return true;
+	}
 	public static void main(String[] args) {
 		String filePath ="C:\\Users\\updates\\CharaParserTest\\CharaParserUpdating\\RubusGray\\482_family_rosaceae_tribe_rubeae_genus_rubus_subgenus_eubatus.corrected.xml";
 		SAXBuilder builder = new SAXBuilder();
