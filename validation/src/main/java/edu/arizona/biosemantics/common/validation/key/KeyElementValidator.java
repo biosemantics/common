@@ -128,6 +128,7 @@ public class KeyElementValidator {
 			for(String id: ids){
 				extraIds += id+", ";
 			}
+			hasError = true;
 			errors.add("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 			exception.addError("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
@@ -220,7 +221,7 @@ public class KeyElementValidator {
 		return true;
 	}
 	public static void main(String[] args) {
-		String filePath ="C:\\Users\\updates\\CharaParserTest\\CharaParserUpdating\\RubusGray\\482_family_rosaceae_tribe_rubeae_genus_rubus_subgenus_eubatus.corrected.xml";
+		String filePath ="C:\\Users\\Aarthy\\etcsite\\Task-Docs\\Key Validation Task\\test\\asteraceae_V19_newHabPhenTaxHier_1.xml";
 		SAXBuilder builder = new SAXBuilder();
 		KeyElementValidator kev = new KeyElementValidator();
 		try {
