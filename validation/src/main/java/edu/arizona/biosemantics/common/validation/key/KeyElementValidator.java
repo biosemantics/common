@@ -81,8 +81,8 @@ public class KeyElementValidator {
 		
 		Element stateId = stateIdPath.evaluateFirst(key);
 		if(stateId == null){
-			errors.add("no statement id found");
-			log(LogLevel.DEBUG,"no statement id found");
+			errors.add("key contains no statements");
+			log(LogLevel.DEBUG,"key contains no statements");
 			return false;
 		}
 		
@@ -103,17 +103,16 @@ public class KeyElementValidator {
 			//log(LogLevel.DEBUG, "checking nextid "+nextId);
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
-				errors.add("next id is the same as the first id "+firstId);
+				errors.add("key contains a loop, check "++" statement "+firstId);
+				log(LogLevel.DEBUG, "key contains a loop, check "++" statement "++firstId);
 				hasError = true;
-				log(LogLevel.DEBUG, "next id is the same as the first id "+firstId);
-				
 				//return false;
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
-				errors.add("a destination can not be found for id "+nextId);
+				errors.add("statement "+nextId+" can not be found");
 				hasError = true;
-				log(LogLevel.DEBUG, "a destination can not be found for id "+nextId);
+				log(LogLevel.DEBUG, "statement "+nextId+" can not be found");//"a destination can not be found for id "+nextId
 				//return false;
 			}
 			/*if(nextIds.contains(nextId)){
@@ -165,9 +164,9 @@ public class KeyElementValidator {
 				String nextId = next.getTextNormalize();
 				//log(LogLevel.DEBUG, "checking nextid "+nextId+" for any loop");
 				if(idsInThisPath.contains(nextId)){
-					errors.add("id "+ nextId+" creates a loop in the key");
+					errors.add("statement "+ nextId+" creates a loop in the key");
 					hasLoop = true;
-					log(LogLevel.DEBUG, "id "+ nextId+" creates a loop in the key");
+					log(LogLevel.DEBUG, "statement "+ nextId+" creates a loop in the key");
 					//return true;
 				}else{
 					idsInThisPath.add(nextId);				
