@@ -77,11 +77,11 @@ public class KeyElementValidator {
 		}
 		for(Element det: detPath.evaluate(key)){
 			if(det.getTextNormalize().replaceAll("[^(){}\\[\\]]", "").length() % 2 !=0){
-				errors.add("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
-				log(LogLevel.DEBUG,"unmatched brackets () [] {} in determination: "+det.getTextNormalize());
+				errors.add("unmatched brackets () [] {} in determination: '"+det.getTextNormalize()+"'");
+				log(LogLevel.DEBUG,"unmatched brackets () [] {} in determination: '"+det.getTextNormalize()+"'");
 				//throw new KeyValidationException("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
-				exception.addError("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
-				hasError = true;
+				exception.addError("unmatched brackets () [] {} in determination: '"+det.getTextNormalize()+"'");
+				throw exception;
 			}
 		}
 		
@@ -91,7 +91,7 @@ public class KeyElementValidator {
 			log(LogLevel.DEBUG,"key contains no statement");
 			//throw new KeyValidationException("key contains no statement");
 			exception.addError("key contains no statement");
-			hasError = true;
+			throw exception;
 		}
 		
 		String firstId = stateId.getTextNormalize();
@@ -110,17 +110,17 @@ public class KeyElementValidator {
 			//log(LogLevel.DEBUG, "checking nextid "+nextId);
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
-				errors.add("key contains a loop, check "+" statement "+firstId);
+				errors.add("key contains a loop, check "+" statement '"+firstId+"'");
 				hasError = true;
-				log(LogLevel.DEBUG, "key contains a loop, check "+" statement "+firstId);
-				exception.addError("key contains a loop, check "+" statement "+firstId);
+				log(LogLevel.DEBUG, "key contains a loop, check "+" statement '"+firstId+"'");
+				exception.addError("key contains a loop, check "+" statement '"+firstId+"'");
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
-				errors.add("statement "+nextId+" can not be found");
+				errors.add("statement '"+nextId+"' can not be found");
 				hasError = true;
-				log(LogLevel.DEBUG, "statement "+nextId+" can not be found");
-				exception.addError("statement "+nextId+" can not be found");
+				log(LogLevel.DEBUG, "statement '"+nextId+"' can not be found");
+				exception.addError("statement '"+nextId+"' can not be found");
 			}
 			/*if(nextIds.contains(nextId)){
 				log(LogLevel.DEBUG, "next id "+nextId+" is referred twice"); //this is a warning, having this doesn't always mean the key is bad
@@ -135,9 +135,9 @@ public class KeyElementValidator {
 				extraIds += id+", ";
 			}
 			hasError = true;
-			errors.add("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			exception.addError("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
+			errors.add("statement(s) '"+extraIds.replaceFirst(", $", "").replaceAll(", ", "', '")+"' not referenced");
+			log(LogLevel.DEBUG, "statement(s) '"+extraIds.replaceFirst(", $", "").replaceAll(", ", "', '")+"' not referenced");
+			exception.addError("statement(s) '"+extraIds.replaceFirst(", $", "").replaceAll(", ", "', '")+"' not referenced");
 		}
 		ArrayList<String> idsInPath = new ArrayList<String> ();
 		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key, exception)){
@@ -173,9 +173,9 @@ public class KeyElementValidator {
 				String nextId = next.getTextNormalize();
 				//log(LogLevel.DEBUG, "checking nextid "+nextId+" for any loop");
 				if(idsInThisPath.contains(nextId)){
-					errors.addError("key contains a loop, check "+ nextId);
+					errors.addError("key contains a loop, check '"+ nextId+"'");
 					hasLoop = true;
-					log(LogLevel.DEBUG, "key contains a loop, check "+ nextId);
+					log(LogLevel.DEBUG, "key contains a loop, check '"+ nextId+"'");
 					//return true;
 				}else{
 					idsInThisPath.add(nextId);				
