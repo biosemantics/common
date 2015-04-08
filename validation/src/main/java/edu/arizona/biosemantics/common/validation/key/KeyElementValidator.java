@@ -110,10 +110,10 @@ public class KeyElementValidator {
 			//log(LogLevel.DEBUG, "checking nextid "+nextId);
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
-				errors.add("key contains a loop, check "++" statement "+firstId);
+				errors.add("key contains a loop, check "+" statement "+firstId);
 				hasError = true;
-				log(LogLevel.DEBUG, "key contains a loop, check "++" statement "+firstId);
-				exception.addError("key contains a loop, check "++" statement "+firstId);
+				log(LogLevel.DEBUG, "key contains a loop, check "+" statement "+firstId);
+				exception.addError("key contains a loop, check "+" statement "+firstId);
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
