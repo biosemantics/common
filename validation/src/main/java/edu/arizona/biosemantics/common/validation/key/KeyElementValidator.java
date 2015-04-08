@@ -4,11 +4,13 @@
 package edu.arizona.biosemantics.common.validation.key;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
@@ -62,32 +64,37 @@ public class KeyElementValidator {
 	 * @return
 	 */
 
-	public boolean validate(Element key, ArrayList<String> errors){
+	public boolean validate(Element key, ArrayList<String> errors) throws KeyValidationException{
 		if(key==null || errors ==null) return false; 
-		
+		boolean hasError = false;
+		KeyValidationException exception = new KeyValidationException();
 		if(keyHeadPath.evaluate(key).size()>1){
 			errors.add("too many key_head in the key, allows only one");
 			log(LogLevel.DEBUG, "too many key_head in the key, allows only one");
-			return false;
+			//throw new KeyValidationException("Too many key_head in the key, allows only one.");
+			exception.addError("Too many key_head in the key, allows only one.");
+			hasError = true;
 		}
-		
 		for(Element det: detPath.evaluate(key)){
 			if(det.getTextNormalize().replaceAll("[^(){}\\[\\]]", "").length() % 2 !=0){
 				errors.add("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
 				log(LogLevel.DEBUG,"unmatched brackets () [] {} in determination: "+det.getTextNormalize());
-				return false;
+				//throw new KeyValidationException("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
+				exception.addError("unmatched brackets () [] {} in determination: "+det.getTextNormalize());
+				hasError = true;
 			}
 		}
 		
 		Element stateId = stateIdPath.evaluateFirst(key);
 		if(stateId == null){
-			errors.add("key contains no statements");
-			log(LogLevel.DEBUG,"key contains no statements");
-			return false;
+			errors.add("key contains no statement");
+			log(LogLevel.DEBUG,"key contains no statement");
+			//throw new KeyValidationException("key contains no statement");
+			exception.addError("key contains no statement");
+			hasError = true;
 		}
 		
 		String firstId = stateId.getTextNormalize();
-		boolean hasError = false;
 		ArrayList<String> nextIds = new ArrayList<String>();
 		
 		//collect all ids
@@ -104,16 +111,16 @@ public class KeyElementValidator {
 			ids.remove(nextId);
 			if(nextId.compareTo(firstId)==0){
 				errors.add("key contains a loop, check "++" statement "+firstId);
-				log(LogLevel.DEBUG, "key contains a loop, check "++" statement "++firstId);
 				hasError = true;
-				//return false;
+				log(LogLevel.DEBUG, "key contains a loop, check "++" statement "+firstId);
+				exception.addError("key contains a loop, check "++" statement "+firstId);
 			}
 			
 			if(this.getKeyStatements(nextId, key).isEmpty()){
 				errors.add("statement "+nextId+" can not be found");
 				hasError = true;
-				log(LogLevel.DEBUG, "statement "+nextId+" can not be found");//"a destination can not be found for id "+nextId
-				//return false;
+				log(LogLevel.DEBUG, "statement "+nextId+" can not be found");
+				exception.addError("statement "+nextId+" can not be found");
 			}
 			/*if(nextIds.contains(nextId)){
 				log(LogLevel.DEBUG, "next id "+nextId+" is referred twice"); //this is a warning, having this doesn't always mean the key is bad
@@ -127,17 +134,19 @@ public class KeyElementValidator {
 			for(String id: ids){
 				extraIds += id+", ";
 			}
-			errors.add("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 			hasError = true;
+			errors.add("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 			log(LogLevel.DEBUG, "statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
-			//return false;
+			exception.addError("statement(s) "+extraIds.replaceFirst(", $", "")+" is/are not referenced");
 		}
 		ArrayList<String> idsInPath = new ArrayList<String> ();
-		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key, errors)){
+		if(containsLoop(this.getKeyStatements(firstId, key), idsInPath, key, exception)){
 			hasError = true;
-			//return false;
 		}
-		return hasError? false : true;
+		if(hasError){
+			throw exception;
+		}
+		return true;
 	}
 
 
@@ -154,7 +163,7 @@ public class KeyElementValidator {
 	 */
 
 	@SuppressWarnings("unchecked")
-	private boolean containsLoop(ArrayList<Element> statements, ArrayList<String> idsInPath, Element key, ArrayList<String> errors) {
+	private boolean containsLoop(ArrayList<Element> statements, ArrayList<String> idsInPath, Element key, KeyValidationException errors) throws KeyValidationException {
 		boolean hasLoop = false;
 		for(Element statement: statements){
 			ArrayList<String> idsInThisPath = (ArrayList<String>) idsInPath.clone();
@@ -164,9 +173,9 @@ public class KeyElementValidator {
 				String nextId = next.getTextNormalize();
 				//log(LogLevel.DEBUG, "checking nextid "+nextId+" for any loop");
 				if(idsInThisPath.contains(nextId)){
-					errors.add("statement "+ nextId+" creates a loop in the key");
+					errors.addError("key contains a loop, check "+ nextId);
 					hasLoop = true;
-					log(LogLevel.DEBUG, "statement "+ nextId+" creates a loop in the key");
+					log(LogLevel.DEBUG, "key contains a loop, check "+ nextId);
 					//return true;
 				}else{
 					idsInThisPath.add(nextId);				
@@ -179,7 +188,6 @@ public class KeyElementValidator {
 			}
 		}
 		return hasLoop? true : false;
-		//return false;
 	}
 
 	/**
@@ -199,9 +207,27 @@ public class KeyElementValidator {
 	}
 	/**
 	 * @param args
+	 * @throws KeyValidationException 
 	 */
+	
+	public boolean validate(String filePath) throws KeyValidationException{
+		SAXBuilder builder = new SAXBuilder();
+		Document document;
+		try {
+			document = (Document) builder.build(new File(filePath));
+			Element rootNode = document.getRootElement();
+			XPathExpression<Element> keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+			for(Element key: keyPath.evaluate(rootNode)){
+				ArrayList<String> errors = new ArrayList<String>();
+				validate(key, errors);
+			}
+		} catch (JDOMException | IOException e) {
+			return false;
+		}
+		return true;
+	}
 	public static void main(String[] args) {
-		String filePath ="C:\\Users\\updates\\CharaParserTest\\CharaParserUpdating\\RubusGray\\482_family_rosaceae_tribe_rubeae_genus_rubus_subgenus_eubatus.corrected.xml";
+		String filePath ="C:\\Users\\Aarthy\\etcsite\\Task-Docs\\Key Validation Task\\test\\asteraceae_V19_newHabPhenTaxHier_1.xml";
 		SAXBuilder builder = new SAXBuilder();
 		KeyElementValidator kev = new KeyElementValidator();
 		try {
@@ -224,3 +250,4 @@ public class KeyElementValidator {
 	}
 
 }
+
