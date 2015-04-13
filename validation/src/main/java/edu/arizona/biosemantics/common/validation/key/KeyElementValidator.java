@@ -4,6 +4,7 @@
 package edu.arizona.biosemantics.common.validation.key;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,13 +25,14 @@ import edu.arizona.biosemantics.common.log.LogLevel;
  *
  */
 public class KeyElementValidator {
-	static XPathFactory fac = null;
 	
-	static XPathExpression<Element> nextIdPath = null;
-	static XPathExpression<Element> stateIdPath = null;
-	static XPathExpression<Element> keyStatePath = null;
-	static XPathExpression<Element> keyHeadPath = null;
-	static XPathExpression<Element> detPath = null;
+	private static XPathFactory fac;
+	private static XPathExpression<Element> nextIdPath;
+	private static XPathExpression<Element> stateIdPath;
+	private static XPathExpression<Element> keyStatePath;
+	private static XPathExpression<Element> keyHeadPath;
+	private static XPathExpression<Element> detPath;
+	private static XPathExpression<Element> keyPath;
 	
 	static{
 		fac = XPathFactory.instance();
@@ -42,6 +44,7 @@ public class KeyElementValidator {
 		/*nextIdPath = fac.compile("//key//next_statement_id", Filters.element());
 		stateIdPath = fac.compile("//key//statement_id", Filters.element());
 		keyStatePath = fac.compile("//key//key_statement", Filters.element());*/
+		keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 	}
 
 	/**
@@ -65,7 +68,7 @@ public class KeyElementValidator {
 	 */
 
 	public boolean validate(Element key, ArrayList<String> errors) throws KeyValidationException{
-		if(key==null || errors ==null) return false; 
+		if(key == null || errors == null) return false; 
 		boolean hasError = false;
 		KeyValidationException exception = new KeyValidationException();
 		if(keyHeadPath.evaluate(key).size()>1){
@@ -99,7 +102,7 @@ public class KeyElementValidator {
 		
 		//collect all ids
 		HashSet<String> ids = new HashSet<String> ();
-		for(Element id: this.stateIdPath.evaluate(key)){
+		for(Element id: stateIdPath.evaluate(key)){
 			ids.add(id.getTextNormalize());
 		}
 		ids.remove(firstId);
@@ -187,7 +190,7 @@ public class KeyElementValidator {
 				}
 			}
 		}
-		return hasLoop? true : false;
+		return hasLoop;
 	}
 
 	/**
@@ -198,9 +201,9 @@ public class KeyElementValidator {
 	 */
 	private ArrayList<Element> getKeyStatements(String stmtid, Element key) {
 		ArrayList<Element> results =  new ArrayList<Element>();
-		for(Object state: keyStatePath.evaluate(key)){
-			if(((Element)state).getChildTextNormalize("statement_id").compareTo(stmtid)==0){
-				results.add((Element) state);
+		for(Element state: keyStatePath.evaluate(key)){
+			if(state.getChildTextNormalize("statement_id").compareTo(stmtid)==0){
+				results.add(state);
 			}
 		}
 		return results;
@@ -213,10 +216,10 @@ public class KeyElementValidator {
 	public boolean validate(String filePath) throws KeyValidationException{
 		SAXBuilder builder = new SAXBuilder();
 		Document document;
-		try {
-			document = (Document) builder.build(new File(filePath));
+		try(FileInputStream fileInputStream = new FileInputStream(filePath)) {
+			document = builder.build(new FileInputStream(filePath));
 			Element rootNode = document.getRootElement();
-			XPathExpression<Element> keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+			
 			for(Element key: keyPath.evaluate(rootNode)){
 				ArrayList<String> errors = new ArrayList<String>();
 				validate(key, errors);
@@ -233,7 +236,6 @@ public class KeyElementValidator {
 		try {
 			Document document = (Document) builder.build(new File(filePath));
 			Element rootNode = document.getRootElement();
-			XPathExpression<Element> keyPath = fac.compile("//bio:treatment/key", Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			for(Element key: keyPath.evaluate(rootNode)){
 				ArrayList<String> errors = new ArrayList<String>();
 				if(!kev.validate(key, errors)){
