@@ -32,6 +32,9 @@ public class TaxonGroupOntology {
 		case PORIFERA:
 			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { Ontology.PORO, 
 					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
+		case SPIDER:
+			return new HashSet<Ontology>(Arrays.asList(new Ontology[] { Ontology.SPD, 
+					Ontology.BSPO, Ontology.RO, Ontology.PATO}));
 		}
 		return new HashSet<Ontology>();
 	}	
