@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.common.ontology.search.model;
 public class OntologyEntry implements Comparable<OntologyEntry> {
 
 	public static enum Type {
-		ENTITY
+		ENTITY, QUALITY
 	}
 	
 	private double score;
