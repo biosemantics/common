@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class RankData implements Comparable<RankData>, Serializable {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private Rank rank = Rank.UNRANKED;
 	private String name;
 	private RankData parent;

@@ -56,6 +56,8 @@ public enum Rank implements Serializable {
 	GROUP(50), 
 	SUBGROUP(51),
 	UNRANKED(Integer.MAX_VALUE);	
+	
+	private static final long serialVersionUID = 1L;
 
 	private int id;
 
