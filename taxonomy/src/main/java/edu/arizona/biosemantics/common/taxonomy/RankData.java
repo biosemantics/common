@@ -12,6 +12,8 @@ public class RankData implements Comparable<RankData>, Serializable {
 	private String author;
 	private String date;
 	
+	public RankData() { }
+	
 	public RankData(Rank rank, String name, RankData parent, String author, String date) {
 		this(rank, name, author, date);
 		this.parent = parent;

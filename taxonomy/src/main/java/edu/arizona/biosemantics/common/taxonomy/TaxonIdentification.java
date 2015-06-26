@@ -11,6 +11,8 @@ public class TaxonIdentification implements Serializable {
 	private String author;
 	private String date;
 
+	public TaxonIdentification() { }
+	
 	public TaxonIdentification(LinkedList<RankData> rankData, String author, String date) {
 		super();
 		this.rankData = rankData;

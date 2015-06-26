@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.common</groupId>
 	<artifactId>taxonomy</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.17-SNAPSHOT</version>
+	<version>0.0.18-SNAPSHOT</version>
 	
 	<properties>
 		<java.version>1.7</java.version>
