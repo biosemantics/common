@@ -17,7 +17,7 @@ public enum TaxonGroup implements Serializable {
 		this.displayName = displayName;
 	}
 	
-	public TaxonGroup valueFromDisplayName(String displayName) {
+	public static TaxonGroup valueFromDisplayName(String displayName) {
 		for(TaxonGroup taxonGroup : values())
 			if(taxonGroup.getDisplayName().equals(displayName))
 				return taxonGroup;
