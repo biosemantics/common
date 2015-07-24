@@ -1,18 +1,17 @@
 /**
  * 
  */
-package edu.arizona.biosemantics.common.ling.know.lib;
+package edu.arizona.biosemantics.common.ling.know;
 
 import java.util.Comparator;
-
-import edu.arizona.biosemantics.common.ling.know.ITerm;
 
 /**
  * @author Hong Cui
  * one term  = a string + a category
  *
  */
-public class Term implements ITerm, Comparator<ITerm>{
+public class Term implements Comparator<Term> {
+	
 	private String label;
 	private String category;
 
@@ -21,30 +20,25 @@ public class Term implements ITerm, Comparator<ITerm>{
 		this.category = category;
 		
 	}
-	@Override
+	
 	public void setLabel(String label) {
 		this.label = label;
-		
 	}
 
-	@Override
 	public void setCategory(String category) {
 		this.category = category;
-		
 	}
 
-	@Override
 	public String getLabel() {
 		return label;
 	}
 
-	@Override
 	public String getCategory() {
 		return category;
 	}
 
 	@Override
-	public int compare(ITerm t1, ITerm t2) {
+	public int compare(Term t1, Term t2) {
 		if(t1.getLabel().compareTo(t2.getLabel())==0 &&
 				t1.getCategory().compareTo(t2.getCategory())==0)
 		return 0;

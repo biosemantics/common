@@ -2,9 +2,8 @@ package edu.arizona.biosemantics.common.ling.transform.lib;
 
 import java.util.List;
 
-import edu.arizona.biosemantics.semanticmarkup.ling.Token;
-import edu.arizona.biosemantics.semanticmarkup.ling.transform.ITokenCombiner;
-
+import edu.arizona.biosemantics.common.ling.Token;
+import edu.arizona.biosemantics.common.ling.transform.ITokenCombiner;
 
 /**
  * WhitespaceTokenCombiner combintes a list of tokens by whitespace

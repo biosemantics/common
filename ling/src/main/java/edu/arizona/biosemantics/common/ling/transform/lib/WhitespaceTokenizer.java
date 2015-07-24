@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.arizona.biosemantics.semanticmarkup.ling.Token;
-import edu.arizona.biosemantics.semanticmarkup.ling.transform.ITokenizer;
-
+import edu.arizona.biosemantics.common.ling.Token;
+import edu.arizona.biosemantics.common.ling.transform.ITokenizer;
 
 /**
  * WhitespaceTokenizer tokenizes a text by whitespace.
@@ -16,6 +15,7 @@ import edu.arizona.biosemantics.semanticmarkup.ling.transform.ITokenizer;
 public class WhitespaceTokenizer implements ITokenizer {
 
 	private Pattern wordPunctuationPattern = Pattern.compile("(.+)([\\!,\\.:;\\?])"); //don't put brackets in here
+	
 	@Override
 	public List<Token> tokenize(String text) {
 		List<Token> tokens = new ArrayList<Token>();

@@ -17,7 +17,7 @@ public interface IGlossary {
 	 */
 	public Set<String> getCategories(String word);
 	
-	public Set<ITerm> getInfo(String word);
+	public Set<Term> getInfo(String word);
 	/**
 	 * @param category
 	 * @return word in the category

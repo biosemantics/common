@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.arizona.biosemantics.semanticmarkup.ling.Token;
-import edu.arizona.biosemantics.semanticmarkup.ling.transform.ITokenizer;
+import edu.arizona.biosemantics.common.ling.Token;
+import edu.arizona.biosemantics.common.ling.transform.ITokenizer;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;

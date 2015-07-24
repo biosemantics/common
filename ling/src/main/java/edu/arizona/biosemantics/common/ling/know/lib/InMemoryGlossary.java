@@ -10,7 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.arizona.biosemantics.common.ling.know.ElementRelationGroup;
 import edu.arizona.biosemantics.common.ling.know.IGlossary;
+import edu.arizona.biosemantics.common.ling.know.Term;
 
 public class InMemoryGlossary implements IGlossary {
 
