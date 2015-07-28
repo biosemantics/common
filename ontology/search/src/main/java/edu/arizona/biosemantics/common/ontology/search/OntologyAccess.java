@@ -25,7 +25,6 @@ import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
-import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
@@ -75,7 +74,7 @@ public class OntologyAccess {
 	public Set<OWLAnnotation> getAnnotationByIRI(OWLClass owlClass, IRI iri) {
 		Set<OWLAnnotation> result = new HashSet<OWLAnnotation>();
 		for(OWLOntology ontology : ontologies){
-			result.addAll(EntitySearcher.getAnnotations(owlClass, ontology, owlDataFactory.getOWLAnnotationProperty(iri)));
+			result.addAll(owlClass.getAnnotations(ontology, owlDataFactory.getOWLAnnotationProperty(iri)));
 		}
 		return result;
 	}
@@ -150,7 +149,7 @@ public class OntologyAccess {
 	public IRI getIRIForLabel(String label) {
 		for(OWLOntology ontology : ontologies) {
 			for (OWLClass owlClass : ontology.getClassesInSignature()) {
-				for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlClass, ontology, owlDataFactory.getRDFSLabel())) {
+				for (OWLAnnotation annotation : owlClass.getAnnotations(ontology, owlDataFactory.getRDFSLabel())) {
 					if (annotation.getValue() instanceof OWLLiteral) {
 						OWLLiteral val = (OWLLiteral) annotation.getValue();
 						if(val.getLiteral().equals(label)) {
