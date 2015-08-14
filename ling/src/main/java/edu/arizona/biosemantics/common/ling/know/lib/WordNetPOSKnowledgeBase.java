@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import edu.arizona.biosemantics.common.ling.know.IPOSKnowledgeBase;
 import edu.arizona.biosemantics.common.ling.pos.POS;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.RAMDictionary;
 import edu.mit.jwi.IDictionary;
@@ -26,7 +27,7 @@ import edu.mit.jwi.morph.WordnetStemmer;
  * (e.g. first thread causes cached dictionary to change its content while second iterates over dictionary content)
  * @author rodenhausen
  */
-public class WordNetPOSKnowledgeBase implements IPOSKnowledgeBase {
+public class WordNetPOSKnowledgeBase implements IPOSKnowledgeBase, AutoCloseable {
 
 	private IDictionary dictionary;
 	
@@ -41,6 +42,11 @@ public class WordNetPOSKnowledgeBase implements IPOSKnowledgeBase {
 		else 
 			dictionary = new Dictionary(new File(path));
 		dictionary.open();
+	}
+		
+	@Override
+	public void close() throws Exception {
+		dictionary.close();
 	}
 
 	@Override
