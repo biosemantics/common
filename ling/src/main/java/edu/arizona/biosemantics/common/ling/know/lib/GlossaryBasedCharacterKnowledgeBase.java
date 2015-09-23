@@ -1,15 +1,35 @@
 package edu.arizona.biosemantics.common.ling.know.lib;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
+import au.com.bytecode.opencsv.CSVReader;
+import edu.arizona.biosemantics.common.biology.TaxonGroup;
 import edu.arizona.biosemantics.common.ling.know.CharacterMatch;
 import edu.arizona.biosemantics.common.ling.know.ElementRelationGroup;
 import edu.arizona.biosemantics.common.ling.know.ICharacterKnowledgeBase;
 import edu.arizona.biosemantics.common.ling.know.IGlossary;
+import edu.arizona.biosemantics.common.ling.know.SingularPluralProvider;
 import edu.arizona.biosemantics.common.ling.know.Term;
 import edu.arizona.biosemantics.common.ling.transform.IInflector;
+import edu.arizona.biosemantics.common.ling.transform.ITokenizer;
+import edu.arizona.biosemantics.common.ling.transform.lib.SomeInflector;
+import edu.arizona.biosemantics.common.ling.transform.lib.WhitespaceTokenizer;
+import edu.arizona.biosemantics.oto.client.oto.OTOClient;
+import edu.arizona.biosemantics.oto.model.GlossaryDownload;
+import edu.arizona.biosemantics.oto.model.TermCategory;
+import edu.arizona.biosemantics.oto.model.TermSynonym;
+import edu.arizona.biosemantics.oto.model.lite.Decision;
+import edu.arizona.biosemantics.oto.model.lite.Download;
+import edu.arizona.biosemantics.oto.model.lite.Synonym;
 
 /**
  * GlossaryBasedCharacterKnowledgeBase poses an ICharacterKnowledgeBase by making use of an IGlossary
@@ -138,7 +158,7 @@ public class GlossaryBasedCharacterKnowledgeBase implements ICharacterKnowledgeB
 		word = ws[ws.length-1];
 		ws = word.split("\\s+"); //brownish red
 		word = ws[ws.length-1];
-		if (word.endsWith("shaped")) word = word.replaceFirst("shaped", "-shaped");
+		if (!word.endsWith("-shaped") && word.endsWith("shaped")) word = word.replaceFirst("shaped", "-shaped");
 		
 		
 		//standarize "_" to "-"
@@ -345,4 +365,30 @@ public class GlossaryBasedCharacterKnowledgeBase implements ICharacterKnowledgeB
 		return glossaryCategories.contains(characterName); //|| learnedCategories.contains(characterName);
 	}
 
+	
+	public static void main(String[] args) throws Exception {
+		TaxonGroup taxonGroup = TaxonGroup.PLANT;
+		String negWords = "no|not|never";
+		String advModifiers = "at least|at first|at times";
+		String stopWords = "a|about|above|across|after|along|also|although|amp|an|and|are|as|at|be|because|become|becomes|becoming|been|before|being|"
+				+ "beneath|between|beyond|but|by|ca|can|could|did|do|does|doing|done|for|from|had|has|have|hence|here|how|however|if|in|into|inside|inward|is|it|its|"
+				+ "may|might|more|most|near|of|off|on|onto|or|out|outside|outward|over|should|so|than|that|the|then|there|these|this|those|throughout|"
+				+ "to|toward|towards|up|upward|was|were|what|when|where|which|why|with|within|without|would";
+		String units = "(?:(?:pm|cm|mm|dm|ft|m|meters|meter|micro_m|micro-m|microns|micron|unes|µm|μm|um|centimeters|centimeter|millimeters|millimeter|transdiameters|transdiameter)[23]?)"; //squared or cubed
+		
+		ITokenizer tokenizer = new WhitespaceTokenizer();
+		tokenizer.tokenize("this is example");
+		WordNetPOSKnowledgeBase wordNetPOSKnowledgeBase = new WordNetPOSKnowledgeBase("C://wordnet//wn31//dict", false);
+		SingularPluralProvider singularPluralProvider = new SingularPluralProvider();
+		IInflector inflector = new SomeInflector(wordNetPOSKnowledgeBase, singularPluralProvider.getSingulars(), singularPluralProvider.getPlurals());
+		IGlossary glossary = new InMemoryGlossary();
+		
+		OTOGlossaryInitializer initializer = new OTOGlossaryInitializer("http://biosemantics.arizona.edu:8080/OTO", inflector, taxonGroup);
+		initializer.initialize(glossary);
+		
+		ICharacterKnowledgeBase characterKnowledgeBase = new GlossaryBasedCharacterKnowledgeBase(glossary, 
+				negWords, advModifiers, stopWords, units, inflector);
+		CharacterMatch out = characterKnowledgeBase.getCharacterName("funnel-shaped");
+		System.out.println(out.getLabel());
+	}
 }
