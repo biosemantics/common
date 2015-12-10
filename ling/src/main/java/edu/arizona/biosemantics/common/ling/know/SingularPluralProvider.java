@@ -3,12 +3,13 @@ package edu.arizona.biosemantics.common.ling.know;
 import java.util.HashMap;
 
 public class SingularPluralProvider {
-	public HashMap<String, String> getSingulars() {
-		
-		HashMap<String, String> singulars = new HashMap<String, String>();
-		singulars.put("rachis", "rachis");
-		
-	    //special cases
+	HashMap<String, String> singulars = new HashMap<String, String>();
+	HashMap<String, String> plurals = new HashMap<String, String>();
+	
+	public SingularPluralProvider{
+		//add special cases in BOTH singulars and plurals hashmaps
+		//keep the alphabetical order
+
 		singulars.put("anthocyathia", "anthocyathus");
 		singulars.put("axis", "axis");
 		singulars.put("axes", "axis");
@@ -57,6 +58,7 @@ public class SingularPluralProvider {
 		singulars.put("ptyxis", "ptyxis");
 		singulars.put("proglottides", "proglottis");
 		singulars.put("pseudocoelomata", "pseudocoelomates");
+		singulars.put("rachis", "rachis");
 		singulars.put("series", "series");
 		singulars.put("setules", "setula");
 		singulars.put("species", "species");
@@ -65,28 +67,8 @@ public class SingularPluralProvider {
 		singulars.put("tibia", "tibia");
 		singulars.put("themselves", "themselves");
 		singulars.put("valves", "valve");
-		/*singulars.put("axis", "axis");
-		singulars.put("axes", "axis");
-		singulars.put("bases", "base");
-		singulars.put("boss", "boss");
-		singulars.put("buttress", "buttress");
-		singulars.put("callus", "callus");
-		singulars.put("frons", "frons");
-		singulars.put("grooves", "groove");
-		singulars.put("interstices", "interstice");
-		singulars.put("lens", "len");
-		singulars.put("media", "media");
-		singulars.put("midnerves", "midnerve");
-		singulars.put("process", "process");
-		singulars.put("series", "series");
-		singulars.put("species", "species");
-		singulars.put("teeth", "tooth");
-		singulars.put("valves", "valve");*/
-		return singulars;
-	}
-
-	public HashMap<String, String> getPlurals() {
-		HashMap<String, String> plurals = new HashMap<String, String>();
+	
+		
 		plurals.put("anthocyathus","anthocyathia");
 		plurals.put("axis", "axes");
 		plurals.put("base", "bases");
@@ -139,22 +121,21 @@ public class SingularPluralProvider {
 		plurals.put("tibia", "tibiae");
 		plurals.put("tooth", "teeth");
 		plurals.put("valve", "valves");
-		/*plurals.put("axis", "axes");
-		plurals.put("base", "bases");
-		plurals.put("groove", "grooves");
-		plurals.put("interstice", "interstices");
-		plurals.put("len", "lens");
-		plurals.put("media", "media");
-		plurals.put("midnerve", "midnerves");
-		plurals.put("tooth", "teeth");
-		plurals.put("valve", "valves");
-		plurals.put("boss", "bosses");
-		plurals.put("buttress", "buttresses");
-		plurals.put("callus", "calluses");
-		plurals.put("frons", "fronses");
-		plurals.put("process", "processes");
-		plurals.put("series", "series");
-		plurals.put("species", "species");*/
+
+	}
+	
+	public void addSingular(String singular, String plural){
+		if(singulars.get(singular)==null)
+			singulars.put(singular, plural);
+	}
+	public void addPlural(String plural, String singular){
+		if(plurals.get(plural)==null)
+			plurals.put(plural, singular);
+	}
+	public HashMap<String, String> getSingulars() {
+		return singulars;
+	}
+	public HashMap<String, String> getPlurals() {
 		return plurals;
 	}
 	
