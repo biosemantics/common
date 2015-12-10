@@ -6,7 +6,7 @@ public class SingularPluralProvider {
 	HashMap<String, String> singulars = new HashMap<String, String>();
 	HashMap<String, String> plurals = new HashMap<String, String>();
 	
-	public SingularPluralProvider{
+	public SingularPluralProvider(){
 		//add special cases in BOTH singulars and plurals hashmaps
 		//keep the alphabetical order
 
