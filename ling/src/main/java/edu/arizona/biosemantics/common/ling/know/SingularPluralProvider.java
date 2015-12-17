@@ -124,13 +124,13 @@ public class SingularPluralProvider {
 
 	}
 	
-	public void addSingular(String singular, String plural){
-		if(singulars.get(singular)==null)
-			singulars.put(singular, plural);
+	public void addPlural(String singular, String plural){
+		if(plurals.get(singular)==null)
+			plurals.put(singular, plural);
 	}
-	public void addPlural(String plural, String singular){
-		if(plurals.get(plural)==null)
-			plurals.put(plural, singular);
+	public void addSingular(String plural, String singular){
+		if(singulars.get(plural)==null)
+			singulars.put(plural, singular);
 	}
 	public HashMap<String, String> getSingulars() {
 		return singulars;
