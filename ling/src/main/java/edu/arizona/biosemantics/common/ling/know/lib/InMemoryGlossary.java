@@ -1,5 +1,12 @@
 package edu.arizona.biosemantics.common.ling.know.lib;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,8 +20,9 @@ import java.util.regex.Pattern;
 import edu.arizona.biosemantics.common.ling.know.ElementRelationGroup;
 import edu.arizona.biosemantics.common.ling.know.IGlossary;
 import edu.arizona.biosemantics.common.ling.know.Term;
+import edu.arizona.biosemantics.common.log.LogLevel;
 
-public class InMemoryGlossary implements IGlossary {
+public class InMemoryGlossary implements IGlossary, Serializable {
 
 
 /*	private Set<String> structures = new HashSet<String>();
@@ -292,5 +300,14 @@ public class InMemoryGlossary implements IGlossary {
 	@Override
 	public ConcurrentSkipListSet<String> getIndexedStructures(){
 		return this.indexedStructures;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		InMemoryGlossary gl = new InMemoryGlossary();
+		
+		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(
+				"Model.ser")))) {
+			output.writeObject(gl);
+		}
 	}
 }
