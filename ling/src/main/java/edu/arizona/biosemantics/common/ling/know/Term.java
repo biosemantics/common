@@ -3,6 +3,7 @@
  */
 package edu.arizona.biosemantics.common.ling.know;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -10,11 +11,13 @@ import java.util.Comparator;
  * one term  = a string + a category
  *
  */
-public class Term implements Comparator<Term> {
+public class Term implements Comparator<Term>, Serializable {
 	
 	private String label;
 	private String category;
 
+	public Term() { }
+	
 	public Term(String str, String category){
 		this.label = str;
 		this.category = category;
