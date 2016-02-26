@@ -73,6 +73,16 @@ public interface IGlossary {
 	
 	public boolean 	hasIndexedStructure ();
 	public ConcurrentSkipListSet<String> getIndexedStructures();
+
+	Set<String> getSynonymsOfCategory(String category);
+
+	Set<Term> getMainTermsOfSynonym(String synonym);
+
+	Set<Term> getSynonymsOfMainTerm(String mainTerm);
+
+	Set<String> getCategoriesOfMainTerm(String mainTerm);
+
+	Set<String> getMainTermsOfCategory(String category);
 	
 	/*
 	public void addStructure(String structure);

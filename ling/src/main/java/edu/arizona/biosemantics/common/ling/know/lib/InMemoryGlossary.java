@@ -131,6 +131,33 @@ public class InMemoryGlossary implements IGlossary, Serializable {
 	protected Pattern indexedStructurePtn = Pattern.compile("(.*)[_-](\\d+|[ivx]+)$", Pattern.CASE_INSENSITIVE);
 	
 	@Override
+	public Set<Term> getMainTermsOfSynonym(String synonym) {
+		return syns.get(synonym);
+	}
+	
+	@Override
+	public Set<Term> getSynonymsOfMainTerm(String mainTerm) {
+		return reverseSyns.get(mainTerm);
+	}
+	
+	@Override
+	public Set<String> getSynonymsOfCategory(String category){
+		return synsByCategory.get(category);
+	}
+	
+	@Override
+	public Set<String> getCategoriesOfMainTerm(String mainTerm) {
+		return glossary.get(mainTerm);
+	}
+	
+	@Override
+	public Set<String> getMainTermsOfCategory(String category) {
+		return reverseGlossary.get(category);
+	}
+	
+	
+	
+	@Override
 	public Set<String> getWordsInCategory(String category) { //returns preferred terms and synonyms
 		category = category.toLowerCase().trim();
 		HashSet<String> terms = new HashSet<String> ();
