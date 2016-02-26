@@ -132,26 +132,36 @@ public class InMemoryGlossary implements IGlossary, Serializable {
 	
 	@Override
 	public Set<Term> getMainTermsOfSynonym(String synonym) {
+		if(!syns.contains(synonym))
+			return new HashSet<Term>();
 		return syns.get(synonym);
 	}
 	
 	@Override
 	public Set<Term> getSynonymsOfMainTerm(String mainTerm) {
+		if(!reverseSyns.contains(mainTerm))
+			return new HashSet<Term>();
 		return reverseSyns.get(mainTerm);
 	}
 	
 	@Override
 	public Set<String> getSynonymsOfCategory(String category){
+		if(!synsByCategory.contains(category))
+			return new HashSet<String>();
 		return synsByCategory.get(category);
 	}
 	
 	@Override
 	public Set<String> getCategoriesOfMainTerm(String mainTerm) {
+		if(!glossary.contains(mainTerm))
+			return new HashSet<String>();
 		return glossary.get(mainTerm);
 	}
 	
 	@Override
 	public Set<String> getMainTermsOfCategory(String category) {
+		if(!reverseGlossary.contains(category))
+			return new HashSet<String>();
 		return reverseGlossary.get(category);
 	}
 	
