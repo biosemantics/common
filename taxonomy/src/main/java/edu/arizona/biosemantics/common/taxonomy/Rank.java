@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.common.taxonomy;
 import java.io.Serializable;
 
 public enum Rank implements Serializable {
-	LIFE(0), 
+	/*LIFE(0), 
 	SUPERDOMAIN(1), 
 	DOMAIN(2), 
 	SUBDOMAIN(3), 
@@ -55,21 +55,71 @@ public enum Rank implements Serializable {
 	SUPERGROUP(49), 
 	GROUP(50), 
 	SUBGROUP(51),
-	UNRANKED(Integer.MAX_VALUE);	
+	UNRANKED(Integer.MAX_VALUE);	*/
+	
+	
+	//taken from GBIF's http://rs.gbif.org/vocabulary/gbif/rank.xml
+	DOMAIN(1, "Domain"), 
+	KINGDOM(2, "Kingdom"), 
+	SUBKINGDOM(3, "Subkingdom"),
+	SUPERPHYLUM(4, "Superphylum"),
+	PHYLUM(5, "Phylum"),
+	SUBPHYLUM(6, "Subphylum"),
+	SUPERCLASS(7, "Superclass"),
+	CLASS(8, "Class"),
+	SUBCLASS(9, "Subclass"),
+	SUPERCOHORT(10, "Supercohort"),
+	COHORT(11, "Cohort"),
+	SUBCOHORT(12, "Subcohort"),
+	SUPERORDER(13, "Superorder"),
+	ORDER(14, "Order"),
+	SUBORDER(15, "Suborder"),
+	INFRAORDER(16, "Infraorder"),
+	SUPERFAMILY(17, "Superfamily"),
+	FAMILY(18, "Family"),
+	SUBFAMILY(19, "Subfamily"),
+	TRIBE(20, "Tribe"),
+	SUBTRIBE(21, "Subtribe"),
+	GENUS(22, "Genus"),
+	SUBGENUS(23, "Subgenus"),
+	SECTION(24, "Section"),
+	SUBSECTION(25, "Subsection"),
+	SERIES(26, "Series"),
+	SUBSERIES(27, "Subseries"),
+	SPECIES_AGGREGATE(28, "Species-Aggregate"),
+	SPECIES(29, "Species"),
+	SUBSPECIFIC_AGGREGATE(30, "Subspecific-Aggregate"),
+	SUBSPECIES(31, "Subspecies"),
+	VARIETY(32, "Variety"),
+	SUBVARIETY(33, "Subvariety"),
+	FORM(34, "Form"),
+	SUBFORM(35, "Subform"),
+	CULTIVAR_GROUP(36, "Cultivar-Group"),
+	CULTIVAR(37, "Cultivar"),
+	STRAIN(38, "Strain"),
+	UNRANKED(Integer.MAX_VALUE, "Unranked");
+	
 	
 	private static final long serialVersionUID = 1L;
 
 	private int id;
 
+	private String displayName;
+
 	Rank() {
 	}
 
-	Rank(int id) {
+	Rank(int id, String displayName) {
 		this.id = id;
+		this.displayName = displayName;
 	}
 
 	public int getId() {
 		return id;
+	}
+	
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	public static boolean isValidParentChild(Rank parent, Rank child) {
