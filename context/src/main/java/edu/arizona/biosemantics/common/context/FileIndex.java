@@ -6,9 +6,11 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -35,17 +37,34 @@ public class FileIndex implements Index {
 		this.baseDirectory = baseDirectory;
 	}
 	
-	public void open() throws IOException {
+	public void destory() throws IOException {
+		this.close();
 		File file = new File(baseDirectory);
-		if(!file.exists())
-			file.mkdirs();
-		directory = FSDirectory.open(file.toPath());
+		FileUtils.deleteDirectory(file);
 	}
 	
+	public void open() throws IOException {
+		if(this.isClosed()) {
+			File file = new File(baseDirectory);
+			if(!file.exists())
+				file.mkdirs();
+			directory = FSDirectory.open(file.toPath());
+		}
+	}
+	
+	private boolean isClosed() {
+		return directory == null;
+	}
+
 	public void close() {
-		directory.close();
+		if(this.isOpen())
+			directory.close();
 	}
 	
+	private boolean isOpen() {
+		return directory != null;
+	}
+
 	public void add(List<Context> contexts) throws Exception {
 		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		IndexWriter writer = new IndexWriter(directory, config);
@@ -56,8 +75,9 @@ public class FileIndex implements Index {
 
 	private void addDocument(Context context, IndexWriter writer) throws IOException {
 		Document doc = new Document();
-	    doc.add(new TextField("text", context.getText(), Field.Store.YES));
+		doc.add(new IntField("id", context.getId(), Field.Store.YES));
 	    doc.add(new StringField("source", context.getSource(), Field.Store.YES));
+	    doc.add(new TextField("text", context.getText(), Field.Store.YES));
 	    writer.addDocument(doc);
 	}
 
@@ -78,7 +98,7 @@ public class FileIndex implements Index {
         for(int i = 0; i < hits.length; i++) {
             int docId = hits[i].doc;
             Document document = searcher.doc(docId);
-            result.add(new Context(document.get("source"), document.get("text")));
+            result.add(new Context(Integer.valueOf(document.get("id")), document.get("source"), document.get("text")));
         }
         reader.close();
 		return result;
@@ -86,12 +106,13 @@ public class FileIndex implements Index {
 	
 	public static void main(String[] args) throws Exception {
 		FileIndex index = new FileIndex("index");
+		index.destory();
 		index.open();
-		index.add(new Context("src1", "this is some example text"));
-		index.add(new Context("src2", "this is weird text"));
-		index.add(new Context("src3", "this is another example text"));
-		index.add(new Context("src4", "hello it's me"));
-		index.add(new Context("src5", "test"));
+		index.add(new Context(1, "src1", "this is some example text"));
+		index.add(new Context(2, "src2", "this is weird text"));
+		index.add(new Context(3, "src3", "this is another example text"));
+		index.add(new Context(4, "src4", "hello it's me"));
+		index.add(new Context(5, "src5", "test"));
 		List<Context> result = index.search("text", 5);
 		System.out.println(result);
 		index.close();
