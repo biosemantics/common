@@ -1,6 +1,8 @@
-package edu.arizona.biosemantics.common.context;
+package edu.arizona.biosemantics.common.context.server;
 
 import java.util.List;
+
+import edu.arizona.biosemantics.common.context.shared.Context;
 
 public interface Index {
 

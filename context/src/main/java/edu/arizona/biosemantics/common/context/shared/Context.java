@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.common.context;
+package edu.arizona.biosemantics.common.context.shared;
 
 import java.io.Serializable;
 
@@ -8,6 +8,8 @@ public class Context implements Serializable {
 	private int id;
 	private String source;
 	private String text;
+	
+	public Context() { }
 	
 	public Context(int id, String source, String text) {
 		this.id = id;

@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.common.context;
+package edu.arizona.biosemantics.common.context.server;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +26,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
+
+import edu.arizona.biosemantics.common.context.shared.Context;
 
 public class FileIndex implements Index {
 	
