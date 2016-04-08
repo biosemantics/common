@@ -96,9 +96,9 @@ public enum Rank implements Serializable {
 	SUBFORM(35, "Subform"),
 	CULTIVAR_GROUP(36, "Cultivar-Group"),
 	CULTIVAR(37, "Cultivar"),
-	STRAIN(38, "Strain"),
+	//STRAIN(38, "Strain"),
 	UNRANKED(Integer.MAX_VALUE, "Unranked");
-	
+
 	
 	private static final long serialVersionUID = 1L;
 
