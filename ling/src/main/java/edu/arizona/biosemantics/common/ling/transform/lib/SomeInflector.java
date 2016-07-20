@@ -44,7 +44,7 @@ public class SomeInflector implements IInflector {
 	
 	@Override
 	public String getSingular(String word) {
-		if(!word.matches(".*?[a-zA-Z].*")) //not a word, e.g 3-5
+		if(!word.matches(".*?[a-zA-Z].*") || word.contains(")") || word.contains("(")) //not a word, e.g 3-5
 			return word;
 		
 		String s = "";
