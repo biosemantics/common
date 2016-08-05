@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
-import org.jgrapht.DirectedGraph;
+import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 
 public class Reader {
 
@@ -14,11 +14,11 @@ public class Reader {
 		this.inputGraphFile = inputGraphFile;
 	}
 	
-	public DirectedGraph<String, Relationship> read() throws Exception {
+	public DirectedSparseMultigraph<String, Edge> read() throws Exception {
 		try(FileInputStream fileInputStream = new FileInputStream(new File(inputGraphFile))) {
 			try(ObjectInputStream in = new ObjectInputStream(fileInputStream)) {
 				Object object = in.readObject();
-				return (DirectedGraph<String, Relationship>)object;
+				return (DirectedSparseMultigraph<String, Edge>)object;
 			}
 		}
 	}
