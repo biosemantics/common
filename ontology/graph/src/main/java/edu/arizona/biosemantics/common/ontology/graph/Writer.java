@@ -30,6 +30,9 @@ import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import edu.arizona.biosemantics.common.ontology.AnnotationProperty;
+import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Edge;
+import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Relation;
+import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Vertex;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 
 public class Writer {
@@ -59,11 +62,11 @@ public class Writer {
 	}
 	
 	public void write() throws Exception {
-		DirectedSparseMultigraph<String, Edge> graph = createGraph();
+		OntologyGraph graph = createGraph();
 		serializeGraph(graph);
 	}
 	
-	private void serializeGraph(DirectedSparseMultigraph<String, Edge> graph) throws IOException {
+	private void serializeGraph(OntologyGraph graph) throws IOException {
 		try(FileOutputStream fileOutputStream = new FileOutputStream(new File(outputGraphFile))) {
 			try(ObjectOutputStream out = new ObjectOutputStream(fileOutputStream)) {
 				out.writeObject(graph);
@@ -72,10 +75,10 @@ public class Writer {
 		}
 	}
 
-	private DirectedSparseMultigraph<String, Edge> createGraph() throws OWLOntologyCreationException {
+	private OntologyGraph createGraph() throws OWLOntologyCreationException {
 		File ontologyFile = new File(inputOntologyFile);
 		OWLOntology owlOntology = owlOntologyManager.loadOntologyFromOntologyDocument(ontologyFile);
-		DirectedSparseMultigraph<String, Edge> graph = new DirectedSparseMultigraph<String, Edge>();
+		OntologyGraph graph = new OntologyGraph();
 		
 		Set<OWLClass> owlClasses = owlOntology.getClassesInSignature(Imports.EXCLUDED);
 
@@ -85,28 +88,32 @@ public class Writer {
 			String label = this.getLabel(owlOntology, owlClass);
 			
 			if(label != null && !label.isEmpty()) {
-				graph.addVertex(label);
+				Vertex dest = new Vertex(label, "");
+				graph.addVertex(dest);
 				
 				Set<String> superclasses = getSuperclasses(owlOntology, owlClass);
 				for(String superclass : superclasses) {
-					graph.addVertex(superclass);
-					graph.addEdge(new Edge(Edge.Type.SUBCLASS_OF), superclass, label);
-					System.out.println(label + " ---subclass-of---> " +  superclass);
+					Vertex src = new Vertex(superclass, "");
+					graph.addVertex(src);
+					graph.addRelation(new Relation(src, dest, new Edge(Edge.Type.SUBCLASS_OF)));
+					//System.out.println(label + " ---subclass-of---> " +  superclass);
 				}
 				
 				Set<String> parents = getParents(owlOntology, owlClass);
 				for(String parent : parents) {
-					graph.addVertex(parent);
-					graph.addEdge(new Edge(Edge.Type.PART_OF), label, parent);
-					System.out.println(label + " ---part-of---> " +  parent);
+					Vertex src = new Vertex(parent, "");
+					graph.addVertex(src);
+					graph.addRelation(new Relation(src, dest, new Edge(Edge.Type.PART_OF)));
+					//System.out.println(label + " ---part-of---> " +  parent);
 				}
 				
 				Set<String> synonyms = getSynonyms(owlOntology, owlClass);
 				for(String synonym : synonyms) {
-					System.out.println(synonym + " ---synonym-of---> " +  label);
-					graph.addVertex(synonym);
-					graph.addEdge(new Edge(Edge.Type.SYNONYM_OF), synonym, label);
-					System.out.println(synonym + " ---synonym-of---> " +  label);
+					//System.out.println(synonym + " ---synonym-of---> " +  label);
+					Vertex src = new Vertex(synonym, "");
+					graph.addVertex(src);
+					graph.addRelation(new Relation(src, dest, new Edge(Edge.Type.SYNONYM_OF)));
+					//System.out.println(synonym + " ---synonym-of---> " +  label);
 				}
 				
 				/*Set<OWLClassAxiom> classAxioms = owlOntology.getAxioms(owlClass, Imports.EXCLUDED);

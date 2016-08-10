@@ -14,11 +14,11 @@ public class Reader {
 		this.inputGraphFile = inputGraphFile;
 	}
 	
-	public DirectedSparseMultigraph<String, Edge> read() throws Exception {
+	public OntologyGraph read() throws Exception {
 		try(FileInputStream fileInputStream = new FileInputStream(new File(inputGraphFile))) {
 			try(ObjectInputStream in = new ObjectInputStream(fileInputStream)) {
 				Object object = in.readObject();
-				return (DirectedSparseMultigraph<String, Edge>)object;
+				return (OntologyGraph)object;
 			}
 		}
 	}
