@@ -88,31 +88,29 @@ public class Writer {
 			String label = this.getLabel(owlOntology, owlClass);
 			
 			if(label != null && !label.isEmpty()) {
-				Vertex dest = new Vertex(label, "");
-				graph.addVertex(dest);
+				Vertex v = new Vertex(label, owlClass.getIRI().toString());
+				graph.addVertex(v);
 				
-				Set<String> superclasses = getSuperclasses(owlOntology, owlClass);
-				for(String superclass : superclasses) {
-					Vertex src = new Vertex(superclass, "");
-					graph.addVertex(src);
-					graph.addRelation(new Relation(src, dest, new Edge(Edge.Type.SUBCLASS_OF)));
+				Set<Vertex> superclasses = getSuperclasses(owlOntology, owlClass);
+				for(Vertex superclass : superclasses) {
+					graph.addVertex(superclass);
+					graph.addRelation(new Relation(superclass, v, new Edge(Edge.Type.SUBCLASS_OF)));
 					//System.out.println(label + " ---subclass-of---> " +  superclass);
 				}
 				
-				Set<String> parents = getParents(owlOntology, owlClass);
-				for(String parent : parents) {
-					Vertex src = new Vertex(parent, "");
-					graph.addVertex(src);
-					graph.addRelation(new Relation(src, dest, new Edge(Edge.Type.PART_OF)));
+				Set<Vertex> parents = getParents(owlOntology, owlClass);
+				for(Vertex parent : parents) {
+					graph.addVertex(parent);
+					graph.addRelation(new Relation(parent, v, new Edge(Edge.Type.PART_OF)));
 					//System.out.println(label + " ---part-of---> " +  parent);
 				}
 				
 				Set<String> synonyms = getSynonyms(owlOntology, owlClass);
-				for(String synonym : synonyms) {
+				for(String syn : synonyms) {
 					//System.out.println(synonym + " ---synonym-of---> " +  label);
-					Vertex src = new Vertex(synonym, "");
-					graph.addVertex(src);
-					graph.addRelation(new Relation(src, dest, new Edge(Edge.Type.SYNONYM_OF)));
+					Vertex synonym = new Vertex(syn, "");
+					graph.addVertex(synonym);
+					graph.addRelation(new Relation(v, synonym, new Edge(Edge.Type.SYNONYM_OF)));
 					//System.out.println(synonym + " ---synonym-of---> " +  label);
 				}
 				
@@ -162,8 +160,8 @@ public class Writer {
 		return graph;
 	}
 
-	private Set<String> getParents(OWLOntology owlOntology, OWLClass owlClass) {
-		Set<String> result = new HashSet<String>();
+	private Set<Vertex> getParents(OWLOntology owlOntology, OWLClass owlClass) {
+		Set<Vertex> result = new HashSet<Vertex>();
 		Collection<OWLClassExpression> superclasses = EntitySearcher.getSuperClasses(owlClass, owlOntology);
 		for(OWLClassExpression superclass : superclasses) {
 			if(superclass instanceof OWLObjectSomeValuesFrom) {
@@ -174,7 +172,7 @@ public class Writer {
 						OWLClass parent = (OWLClass)filler;
 						String parentLabel = getLabel(owlOntology, parent);
 						if(parentLabel != null && !parentLabel.isEmpty()) 
-							result.add(parentLabel);
+							result.add(new Vertex(parentLabel, parent.getIRI().toString()));
 					}
 				}
 			}
@@ -182,14 +180,14 @@ public class Writer {
 		return result;
 	}
 	
-	private Set<String> getSuperclasses(OWLOntology owlOntology, OWLClass owlClass) {
+	private Set<Vertex> getSuperclasses(OWLOntology owlOntology, OWLClass owlClass) {
 		Collection<OWLClassExpression> superclasses = EntitySearcher.getSuperClasses(owlClass, owlOntology);
-		Set<String> result = new HashSet<String>();
+		Set<Vertex> result = new HashSet<Vertex>();
 		for(OWLClassExpression superclass : superclasses) {
 			if(superclass instanceof OWLClass) {
 				String superclassLabel = getLabel(owlOntology, ((OWLClass)superclass));
 				if(superclassLabel != null && !superclassLabel.isEmpty()) 
-					result.add(superclassLabel);
+					result.add(new Vertex(superclassLabel, ((OWLClass)superclass).getIRI().toString()));
 			}
 		}
 		return result;

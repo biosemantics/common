@@ -46,6 +46,10 @@ public class OntologyGraph implements Serializable {
 		public void setIri(String iri) {
 			this.iri = iri;
 		}
+		
+		public boolean hasIri() {
+			return iri != null && !iri.isEmpty();
+		}
 
 		@Override
 		public String toString() {
@@ -164,7 +168,7 @@ public class OntologyGraph implements Serializable {
 	public boolean addVertex(Vertex vertex) {
 		boolean result = graph.addVertex(vertex);
 		if (result) {
-			if(!nameIndex.containsKey(vertex.getName()))
+			if(!nameIndex.containsKey(vertex.getName())) 
 				nameIndex.put(vertex.getName(), new HashSet<Vertex>());
 			nameIndex.get(vertex.getName()).add(vertex);
 			iriIndex.put(vertex.getIri(), vertex);
@@ -194,7 +198,9 @@ public class OntologyGraph implements Serializable {
 		return graph.addEdge(relation.getEdge(), relation.getSource(), relation.getDestination(), EdgeType.DIRECTED);
 	}
 
-	public Set<Vertex> getVertexByName(String name) {
+	public Set<Vertex> getVerticesByName(String name) {
+		if(!nameIndex.containsKey(name))
+			return new HashSet<Vertex>();
 		return nameIndex.get(name);
 	}
 	
