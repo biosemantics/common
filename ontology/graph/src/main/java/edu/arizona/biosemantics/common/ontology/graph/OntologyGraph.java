@@ -96,11 +96,15 @@ public class OntologyGraph implements Serializable {
 		
 		private static final long serialVersionUID = 1L;
 		private Type type;
+		private Vertex src;
+		private Vertex dest;
 		
 		public Edge() {
 		}
 
-		public Edge(Type type) {
+		public Edge(Vertex src, Vertex dest, Type type) {
+			this.src = src;
+			this.dest = dest;
 			this.type = type;
 		}
 
@@ -108,51 +112,52 @@ public class OntologyGraph implements Serializable {
 			return type;
 		}
 
-		public void setType(Type type) {
-			this.type = type;
+		public Vertex getSrc() {
+			return src;
 		}
-	}
-	
-	public static class Relation implements Serializable {
-		
-		private static final long serialVersionUID = 1L;
-		private Vertex source;
-		private Vertex destination;
-		private Edge edge;
-		
-		public Relation() { }
-		
-		public Relation(Vertex source, Vertex destination, Edge edge) {
-			this.source = source;
-			this.destination = destination;
-			this.edge = edge;
+
+		public Vertex getDest() {
+			return dest;
 		}
-		
-		public Vertex getSource() {
-			return source;
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((dest == null) ? 0 : dest.hashCode());
+			result = prime * result + ((src == null) ? 0 : src.hashCode());
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			return result;
 		}
-		public void setSource(Vertex source) {
-			this.source = source;
-		}
-		public Vertex getDestination() {
-			return destination;
-		}
-		public void setDestination(Vertex destination) {
-			this.destination = destination;
-		}
-		public Edge getEdge() {
-			return edge;
-		}
-		public void setEdge(Edge edge) {
-			this.edge = edge;
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Edge other = (Edge) obj;
+			if (dest == null) {
+				if (other.dest != null)
+					return false;
+			} else if (!dest.equals(other.dest))
+				return false;
+			if (src == null) {
+				if (other.src != null)
+					return false;
+			} else if (!src.equals(other.src))
+				return false;
+			if (type != other.type)
+				return false;
+			return true;
 		}
 		
 		@Override
 		public String toString() {
-			return source.toString() + " --- " +  edge.toString() + " --> " + destination.toString();
+			return src.toString() + " --- " +  type + " --> " + dest.toString();
 		}
-
-
 	}
 
 	private DirectedSparseMultigraph<Vertex, Edge> graph;
@@ -189,13 +194,13 @@ public class OntologyGraph implements Serializable {
 		return result;
 	}
 
-	public boolean addRelation(Relation relation) {
-		if(!graph.containsVertex(relation.getSource()))
-			this.addVertex(relation.getSource());
-		if(!graph.containsVertex(relation.getDestination()))
-			this.addVertex(relation.getDestination());
+	public boolean addRelation(Edge relation) {
+		if(!graph.containsVertex(relation.getSrc()))
+			this.addVertex(relation.getSrc());
+		if(!graph.containsVertex(relation.getDest()))
+			this.addVertex(relation.getDest());
 		
-		return graph.addEdge(relation.getEdge(), relation.getSource(), relation.getDestination(), EdgeType.DIRECTED);
+		return graph.addEdge(relation, relation.getSrc(), relation.getDest(), EdgeType.DIRECTED);
 	}
 
 	public Set<Vertex> getVerticesByName(String name) {
@@ -207,38 +212,29 @@ public class OntologyGraph implements Serializable {
 	public Vertex getVertexByIri(String iri) {
 		return iriIndex.get(iri);
 	}
-	
-	public Relation getRelation(Edge edge) {
-		return new Relation(graph.getSource(edge), graph.getDest(edge), edge);
-	}
-	
-	public List<Relation> getOutRelations(Vertex vertex, Edge.Type type) {
-		List<Relation> result = new LinkedList<Relation>();
+		
+	public List<Edge> getOutRelations(Vertex vertex, Edge.Type type) {
+		List<Edge> result = new LinkedList<Edge>();
 		if(graph.containsVertex(vertex)) {
 			java.util.Collection<Edge> edges = graph.getOutEdges(vertex);
 			for(Edge edge : edges) {
 				if(edge.getType().equals(type))
-					result.add(new Relation(vertex, graph.getDest(edge), edge));
+					result.add(edge);
 			}
 		}
 		return result;
 	}
 	
-	public List<Relation> getInRelations(Vertex vertex, Edge.Type type) {
-		List<Relation> result = new LinkedList<Relation>();
+	public List<Edge> getInRelations(Vertex vertex, Edge.Type type) {
+		List<Edge> result = new LinkedList<Edge>();
 		if(graph.containsVertex(vertex)) {
 			java.util.Collection<Edge> edges = graph.getInEdges(vertex);
 			for(Edge edge : edges) {
 				if(edge.getType().equals(type))
-					result.add(new Relation(graph.getSource(edge), vertex, edge));
+					result.add(edge);
 			}
 		}
 		return result;
-	}
-
-	public void removeRelation(Relation relation) {
-		graph.removeEdge(relation.getEdge());
-		graph.removeVertex(relation.getDestination());
 	}
 
 	public Collection<Vertex> getVertices() {

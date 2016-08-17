@@ -1,14 +1,11 @@
 package edu.arizona.biosemantics.common.ontology.graph;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -31,9 +28,7 @@ import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import edu.arizona.biosemantics.common.ontology.AnnotationProperty;
 import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Edge;
-import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Relation;
 import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Vertex;
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 
 public class Writer {
 
@@ -94,14 +89,14 @@ public class Writer {
 				Set<Vertex> superclasses = getSuperclasses(owlOntology, owlClass);
 				for(Vertex superclass : superclasses) {
 					graph.addVertex(superclass);
-					graph.addRelation(new Relation(superclass, v, new Edge(Edge.Type.SUBCLASS_OF)));
+					graph.addRelation(new Edge(superclass, v, Edge.Type.SUBCLASS_OF));
 					//System.out.println(label + " ---subclass-of---> " +  superclass);
 				}
 				
 				Set<Vertex> parents = getParents(owlOntology, owlClass);
 				for(Vertex parent : parents) {
 					graph.addVertex(parent);
-					graph.addRelation(new Relation(parent, v, new Edge(Edge.Type.PART_OF)));
+					graph.addRelation(new Edge(parent, v, Edge.Type.PART_OF));
 					//System.out.println(label + " ---part-of---> " +  parent);
 				}
 				
@@ -110,7 +105,7 @@ public class Writer {
 					//System.out.println(synonym + " ---synonym-of---> " +  label);
 					Vertex synonym = new Vertex(syn, "");
 					graph.addVertex(synonym);
-					graph.addRelation(new Relation(v, synonym, new Edge(Edge.Type.SYNONYM_OF)));
+					graph.addRelation(new Edge(v, synonym, Edge.Type.SYNONYM_OF));
 					//System.out.println(synonym + " ---synonym-of---> " +  label);
 				}
 				
