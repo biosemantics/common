@@ -5,8 +5,8 @@ import java.io.Serializable;
 public enum TaxonGroup implements Serializable {
 	
 	ALGAE("Algae"), CNIDARIA("Cnidaria"), FOSSIL("Fossil"), GASTROPODS("Gastropods"), HYMENOPTERA("Hymenoptera"), PLANT("Plant"), PORIFERA("Porifera"), 
-	SPIDER("Spider");
-
+	SPIDER("Spider"), COLEOPTERA("Coleoptera"); 
+	
 	private static final long serialVersionUID = 1L;
 	
 	private String displayName;
