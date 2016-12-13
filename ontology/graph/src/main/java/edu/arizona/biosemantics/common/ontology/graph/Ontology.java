@@ -13,7 +13,8 @@ public enum Ontology {
 	ENVO("envo", "http://purl.obolibrary.org/obo/envo.owl"),
 	GO("go", "http://purl.obolibrary.org/obo/go.owl"),
 	UBERON("uberon", "http://purl.obolibrary.org/obo/uberon.owl"),
-	PORO("poro", "http://purl.obolibrary.org/obo/poro.owl");
+	PORO("poro", "http://purl.obolibrary.org/obo/poro.owl"),
+	ModifierOntology("ModifierOntology", "http://biosemantics.arizona.edu/ontologies/ModifierOntology.owl");
 	
 	private String name;
 	private String iri;
