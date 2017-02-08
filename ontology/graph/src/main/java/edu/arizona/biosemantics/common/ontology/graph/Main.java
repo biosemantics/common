@@ -9,17 +9,20 @@ import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("console.out")), true));
+		//System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("console.out")), true));
 		
-		for(Ontology ontology : Ontology.values()) {
+		OntologyGraphCreator c = new OntologyGraphCreator();
+		c.create(args[0], args[1]);
+		
+		/*for(Ontology ontology : Ontology.values()) {
 			System.out.println("Ontology: " + ontology.getName());
 			Writer writer = new Writer("C:/Users/rodenhausen.CATNET/Desktop/etcsite/resources/ontologize/ontologies/" + ontology.getName() + ".owl", 
 					"graphs/" + ontology.getName() + ".graph");
 			writer.write();
 			
-			Reader reader = new Reader("graphs/" + ontology.getName() + ".graph");
-			OntologyGraph graph = reader.read();
-		}
+			//Reader reader = new Reader("graphs/" + ontology.getName() + ".graph");
+			//OntologyGraph graph = reader.read();
+		}*/
 	}
 
 }
