@@ -81,6 +81,7 @@ public class Writer {
 		//If they did, the relations would be merged
 		for(OWLClass owlClass : owlClasses) {
 			String label = this.getLabel(owlOntology, owlClass);
+			System.out.println("label: " + label);
 			
 			if(label != null && !label.isEmpty()) {
 				Vertex v = new Vertex(label, owlClass.getIRI().toString());
@@ -90,14 +91,14 @@ public class Writer {
 				for(Vertex superclass : superclasses) {
 					graph.addVertex(superclass);
 					graph.addRelation(new Edge(superclass, v, Edge.Type.SUBCLASS_OF));
-					//System.out.println(label + " ---subclass-of---> " +  superclass);
+					System.out.println(label + " ---subclass-of---> " +  superclass);
 				}
 				
 				Set<Vertex> parents = getParents(owlOntology, owlClass);
 				for(Vertex parent : parents) {
 					graph.addVertex(parent);
 					graph.addRelation(new Edge(parent, v, Edge.Type.PART_OF));
-					//System.out.println(label + " ---part-of---> " +  parent);
+					System.out.println(label + " ---part-of---> " +  parent);
 				}
 				
 				Set<String> synonyms = getSynonyms(owlOntology, owlClass);
@@ -106,7 +107,7 @@ public class Writer {
 					Vertex synonym = new Vertex(syn, "");
 					graph.addVertex(synonym);
 					graph.addRelation(new Edge(v, synonym, Edge.Type.SYNONYM_OF));
-					//System.out.println(synonym + " ---synonym-of---> " +  label);
+					System.out.println(synonym + " ---synonym-of---> " +  label);
 				}
 				
 				/*Set<OWLClassAxiom> classAxioms = owlOntology.getAxioms(owlClass, Imports.EXCLUDED);
