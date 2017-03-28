@@ -13,19 +13,19 @@ import java.util.Comparator;
  */
 public class Term implements Comparator<Term>, Serializable {
 	
-	private String label;
+	private String text;
 	private String category;
 
 	public Term() { }
 	
 	public Term(String str, String category){
-		this.label = str;
+		this.text = str;
 		this.category = category;
 		
 	}
 	
 	public void setLabel(String label) {
-		this.label = label;
+		this.text = label;
 	}
 
 	public void setCategory(String category) {
@@ -33,7 +33,7 @@ public class Term implements Comparator<Term>, Serializable {
 	}
 
 	public String getLabel() {
-		return label;
+		return text;
 	}
 
 	public String getCategory() {
@@ -57,11 +57,11 @@ public class Term implements Comparator<Term>, Serializable {
 	
 	@Override
 	public int hashCode(){
-		return (label+" "+category).hashCode();
+		return (text+" "+category).hashCode();
 	}
 	
 	@Override
 	public String toString(){
-		return label+"<"+category+">";
+		return text+"<"+category+">";
 	}
 }
