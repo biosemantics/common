@@ -211,7 +211,7 @@ public class InMemoryGlossary implements IGlossary, Serializable {
 	public Set<Term> getInfo(String word) {
 		word = word.toLowerCase().trim();
 		Set<Term> results = new HashSet<Term>();
-		if(glossary.containsKey(word)){
+		if(glossary.containsKey(word)){ //if term is in glossary, then it should not be in syns
 			Set<String> cats = glossary.get(word);
 			for(String cat: cats){
 				results.add(new Term(word, cat));

@@ -59,4 +59,9 @@ public class Term implements Comparator<Term>, Serializable {
 	public int hashCode(){
 		return (label+" "+category).hashCode();
 	}
+	
+	@Override
+	public String toString(){
+		return label+"<"+category+">";
+	}
 }
