@@ -4,10 +4,10 @@
 	<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 	<artifactId>graph</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.8-SNAPSHOT-debug</version>
 	
 	<properties>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<aspectj.version>1.8.10</aspectj.version>
@@ -40,17 +40,17 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>enhance</artifactId>
-			<version>0.0.13-SNAPSHOT</version>
+			<version>0.0.22-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 		 	<artifactId>ontology</artifactId>
-		  	<version>0.0.1-SNAPSHOT</version>
+		  	<version>0.0.1-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		  <artifactId>search</artifactId>
-		  <version>0.0.26-SNAPSHOT</version>
+		  <version>0.0.26-SNAPSHOT-debug</version>
 		  <!-- Not used! And it can cause conflicts in other projects because it uses owlapi3 where we use owlapi4 in other projects -->
 			<exclusions>
 				<exclusion>
@@ -116,7 +116,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.6.1</version>
 				<configuration>
 				  <source>${java.version}</source>
 				  <target>${java.version}</target>
@@ -127,7 +127,7 @@
 			 <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.9</version>
+				<version>1.10</version>
 				<configuration>
 				  <!--<showWeaveInfo>true</showWeaveInfo>-->
 				  <source>${java.version}</source>

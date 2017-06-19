@@ -4,10 +4,10 @@
 	<groupId>edu.arizona.biosemantics.common</groupId>
 	<artifactId>log</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT-debug</version>
 	
 	<properties>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -27,7 +27,7 @@
 	    <dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.7.4</version>
+			<version>1.8.10</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
 		</dependency>
 			<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -67,7 +67,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.7</version>
+				<version>1.10</version>
 				<configuration>
 					<proceedOnError>true</proceedOnError>
 					<complianceLevel>${java.version}</complianceLevel>
