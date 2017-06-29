@@ -21,9 +21,10 @@ public abstract aspect AbstractStringifyInjection {
 	/**
 	 * toString method is defined for IPrintables
 	 */
+	/*etc-site build complains: conflicts with existing member: java.lang.String java.lang.Throwable.toString()
 	public String IPrintable.toString() {
 		return ObjectStringifier.getInstance().stringify(thisObject);
-	}
+	}*/
 
 	/**
 	 * Pointcut specification for object construction of an IPrintable

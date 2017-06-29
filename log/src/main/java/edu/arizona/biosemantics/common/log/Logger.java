@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.common.log;
 
 import java.util.HashMap;
+//import org.slf4j.*;
 
 /**
  * A Logger loggs messages of the various debug levels using slf4j
