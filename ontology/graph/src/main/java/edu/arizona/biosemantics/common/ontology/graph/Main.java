@@ -1,11 +1,5 @@
 package edu.arizona.biosemantics.common.ontology.graph;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-
 public class Main {
 
 	public static void main(String[] args) throws Exception {
