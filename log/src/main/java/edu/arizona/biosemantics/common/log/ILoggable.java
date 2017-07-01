@@ -4,6 +4,7 @@ package edu.arizona.biosemantics.common.log;
 * @author rodenhausen
 */
 public interface ILoggable { 
-	//should not need this: public void log(LogLevel level, String msg);
+	//should not need this: 
+	public void log(LogLevel level, String msg);
 	
 }
