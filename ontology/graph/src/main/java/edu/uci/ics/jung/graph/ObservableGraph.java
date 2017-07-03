@@ -19,7 +19,7 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 public class ObservableGraph<V,E> extends GraphDecorator<V,E> {
 
 	List<GraphEventListener<V,E>> listenerList = 
-		Collections.synchronizedList(new LinkedList<GraphEventListener<V,E>>());
+			java.util.Collections.synchronizedList(new LinkedList<GraphEventListener<V,E>>());
 
     /**
      * Creates a new instance based on the provided {@code delegate}.
