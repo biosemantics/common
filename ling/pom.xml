@@ -4,10 +4,10 @@
 	<groupId>edu.arizona.biosemantics.common</groupId>
 	<artifactId>ling</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.19-SNAPSHOT-debug</version>
+	<version>0.0.20-SNAPSHOT</version>
 
 	<properties>
-		<gwtVersion>2.8.0</gwtVersion>
+		<!--<gwtVersion>2.8.0</gwtVersion> don't use GWT?-->
 		<!-- GWT needs at least java 1.5 -->
 		<!-- But we need at least java 1.6 -->
 		<java.version>1.8</java.version>
@@ -45,12 +45,12 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT-debug</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto</groupId>
 		  <artifactId>oto-client</artifactId>
-		  <version>0.0.54-SNAPSHOT-debug</version>
+		  <version>0.0.55-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
