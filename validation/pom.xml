@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.common</groupId>
 	<artifactId>validation</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.4-SNAPSHOT-debug</version>
+	<version>0.0.5-SNAPSHOT</version>
 	
 	
 	
@@ -74,12 +74,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>

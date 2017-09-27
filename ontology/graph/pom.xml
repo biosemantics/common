@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 	<artifactId>graph</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.8-SNAPSHOT-debug</version>
+	<version>0.0.9-SNAPSHOT</version>
 	
 	<properties>
 		<java.version>1.8</java.version>
@@ -53,17 +53,17 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>enhance</artifactId>
-			<version>0.0.22-SNAPSHOT-debug</version>
+			<version>0.0.23-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 		 	<artifactId>ontology</artifactId>
-		  	<version>0.0.1-SNAPSHOT-debug</version>
+		  	<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		  <artifactId>search</artifactId>
-		  <version>0.0.26-SNAPSHOT-debug</version>
+		  <version>0.0.27-SNAPSHOT</version>
 		  <!-- Not used! And it can cause conflicts in other projects because it uses owlapi3 where we use owlapi4 in other projects -->
 			<exclusions>
 				<exclusion>

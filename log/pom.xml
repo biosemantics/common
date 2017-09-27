@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.common</groupId>
 	<artifactId>log</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.3-SNAPSHOT-debug</version>
+	<version>0.0.4-SNAPSHOT</version>
 	
 	<properties>
 		<java.version>1.8</java.version>
@@ -167,6 +167,7 @@
 			<id>playground</id>
 			<name>playground@SBS</name>
 			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
+			<uniqueVersion>false</uniqueVersion>
 		</repository>
 	</distributionManagement>
 </project>
