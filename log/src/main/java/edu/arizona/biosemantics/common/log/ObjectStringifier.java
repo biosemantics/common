@@ -53,6 +53,7 @@ public class ObjectStringifier {
 	}
 	
 	public static String stringify(Object[] objects) {
+		if(objects==null) return "";
 		StringBuilder result = new StringBuilder();
 		for(Object object : objects)
 			try {
