@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -53,7 +54,7 @@ public class OntologyAccess {
 	
 	public OWLEntity getOWLEntityForIRI(String iri) {
 		for(OWLOntology ontology : ontologies) {
-			Set<OWLEntity> result = ontology.getEntitiesInSignature(IRI.create(iri));
+			Set<OWLEntity> result = ontology.entitiesInSignature(IRI.create(iri)).collect(Collectors.toSet());
 			if(!result.isEmpty())
 				return result.iterator().next();
 		}
@@ -77,7 +78,7 @@ public class OntologyAccess {
 		Set<OWLAnnotation> result = new HashSet<OWLAnnotation>();
 		for(OWLOntology ontology : ontologies){
 			//result.addAll(owlClass.getAnnotations(ontology, owlDataFactory.getOWLAnnotationProperty(iri)));
-			result.addAll(EntitySearcher.getAnnotations(iri, ontology));
+			result.addAll(EntitySearcher.getAnnotations(iri, ontology).collect(Collectors.toSet()));
 		}
 		return result;
 	}
@@ -151,8 +152,8 @@ public class OntologyAccess {
 	//possibly want to cache the read in results once, similar to old ontologysearcher / termsearcher
 	public IRI getIRIForLabel(String label) {
 		for(OWLOntology ontology : ontologies) {
-			for (OWLClass owlClass : ontology.getClassesInSignature()) {
-				Collection <OWLAnnotation> annotations = EntitySearcher.getAnnotations(owlDataFactory.getRDFSLabel(), ontology);
+			for (OWLClass owlClass : ontology.classesInSignature().collect(Collectors.toSet())) {
+				Collection <OWLAnnotation> annotations = EntitySearcher.getAnnotations(owlDataFactory.getRDFSLabel(), ontology).collect(Collectors.toSet());
 				for (OWLAnnotation annotation : annotations) {
 					if (annotation.getValue() instanceof OWLLiteral) {
 						OWLLiteral val = (OWLLiteral) annotation.getValue();

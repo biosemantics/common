@@ -28,16 +28,16 @@ public class FileSearcher implements Searcher {
 		}
 	}
 	
-	public List<OntologyEntry> getEntries(String term) {
+	public List<OntologyEntry> getEntityEntries(String term, String locator, String rel) {
 		List<OntologyEntry> result = new ArrayList<OntologyEntry>();
 		
 		//Only search structures for now leveraging ontologylookup client
 		//This is all construction zone to find out use cases of a Searcher of ontologies we have
 		try {
-			List<EntityProposals> entityProposals = this.ontologyLookupClient.searchStrucutre(term);
+			List<EntityProposals> entityProposals = this.ontologyLookupClient.searchStructure(term, locator, rel);
 			if(entityProposals != null && !entityProposals.isEmpty()) {
 				for(Entity entity : entityProposals.get(0).getProposals()) {
-					result.add(new OntologyEntry(ontology, entity.getClassIRI(), Type.ENTITY, entity.getConfidenceScore()));
+					result.add(new OntologyEntry(ontology, entity.getClassIRI(), Type.ENTITY, entity.getConfidenceScore(),entity.getLabel(), entity.getPLabel()));
 				}
 			}
 		} catch(Throwable t) {
@@ -48,14 +48,14 @@ public class FileSearcher implements Searcher {
 		return result;
 	}
 
-	public List<OntologyEntry> getEntries(String term, Type type) {
+	public List<OntologyEntry> getQualityEntries(String term) {
 		List<OntologyEntry> result = new ArrayList<OntologyEntry>();
 		
 		TermSearcher termSearcher = new TermSearcher(ontologyLookupClient);
-		ArrayList<FormalConcept> concepts = termSearcher.searchTerm(term, type.toString().toLowerCase());
+		ArrayList<FormalConcept> concepts = termSearcher.searchTerm(term, Type.QUALITY.toString().toLowerCase());
 		if(concepts != null)
 			for(FormalConcept concept : concepts) 
-				result.add(new OntologyEntry(ontology, concept.getClassIRI(), type, concept.getConfidenceScore()));
+				result.add(new OntologyEntry(ontology, concept.getClassIRI(), Type.QUALITY, concept.getConfidenceScore(), concept.getLabel(), concept.getPLabel()));
 		
 		Collections.sort(result);
 		return result;
@@ -63,11 +63,15 @@ public class FileSearcher implements Searcher {
 	
 	
 	public static void main(String[] args) {
-		FileSearcher fileSearcher = new FileSearcher(Ontology.PO, "C:/Users/rodenhausen/etcsite/ontologies", "C:/gitEtc/charaparser/wordnet/wn31/dict");
-		List<OntologyEntry> entries = fileSearcher.getEntries("axil", Type.ENTITY);
-		System.out.println(entries.size());
+		FileSearcher fileSearcher = new FileSearcher(Ontology.PO, "C:/Users/hongcui/Documents/etcsite/resources/shared/ontologies",
+				"C:/Users/hongcui/Documents/etcsite/resources/shared/wordnet/wn31/dict");
+		String term = "blade";//"lamina";//"blade";
+		String parent = "leaf";
+		List<OntologyEntry> entries = fileSearcher.getEntityEntries(term, "", "");
+		//List<OntologyEntry> entries = fileSearcher.getEntityEntries(term, parent, "of");
+		System.out.println("Find matches: "+entries.size());
 		for(OntologyEntry entry : entries) {
-			System.out.println(entry.getClassIRI());
+			System.out.println(term +"/"+parent+" has an ID: "+entry.getClassIRI());
 		}
 	}
 }

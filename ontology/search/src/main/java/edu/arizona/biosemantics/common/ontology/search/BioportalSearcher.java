@@ -7,13 +7,20 @@ import edu.arizona.biosemantics.common.ontology.search.model.OntologyEntry.Type;
 
 public class BioportalSearcher implements Searcher {
 
-	public List<OntologyEntry> getEntries(String term) {
+	/*public List<OntologyEntry> getEntries(String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<OntologyEntry> getEntries(String term, Type type) {
 		// TODO Auto-generated method stub
+		return null;
+	}*/
+	
+	public List<OntologyEntry> getEntityEntries(String term, String locator, String rel){
+		return null;
+	}
+	public List<OntologyEntry> getQualityEntries(String term){
 		return null;
 	}
 
