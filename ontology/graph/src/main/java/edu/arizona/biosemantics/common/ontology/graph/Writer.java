@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -158,7 +159,7 @@ public class Writer {
 
 	private Set<Vertex> getParents(OWLOntology owlOntology, OWLClass owlClass) {
 		Set<Vertex> result = new HashSet<Vertex>();
-		Collection<OWLClassExpression> superclasses = EntitySearcher.getSuperClasses(owlClass, owlOntology);
+		Collection<OWLClassExpression> superclasses = EntitySearcher.getSuperClasses(owlClass, owlOntology).collect(Collectors.toSet());
 		for(OWLClassExpression superclass : superclasses) {
 			if(superclass instanceof OWLObjectSomeValuesFrom) {
 				OWLObjectSomeValuesFrom owlObjectSomeValuesFrom = (OWLObjectSomeValuesFrom)superclass;
@@ -177,7 +178,7 @@ public class Writer {
 	}
 	
 	private Set<Vertex> getSuperclasses(OWLOntology owlOntology, OWLClass owlClass) {
-		Collection<OWLClassExpression> superclasses = EntitySearcher.getSuperClasses(owlClass, owlOntology);
+		Collection<OWLClassExpression> superclasses = EntitySearcher.getSuperClasses(owlClass, owlOntology).collect(Collectors.toSet());
 		Set<Vertex> result = new HashSet<Vertex>();
 		for(OWLClassExpression superclass : superclasses) {
 			if(superclass instanceof OWLClass) {
@@ -190,7 +191,7 @@ public class Writer {
 	}
 	
 	private String getLabel(OWLOntology owlOntology, OWLClass owlClass) {
-		for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlClass, owlOntology, labelProperty)) {
+		for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlClass, owlOntology, labelProperty).collect(Collectors.toSet())) {
 			if (annotation.getValue() instanceof OWLLiteral) {
 				OWLLiteral val = (OWLLiteral) annotation.getValue();
 				//if (val.hasLang("en")) {
@@ -203,7 +204,7 @@ public class Writer {
 	
 	private Set<String> getSynonyms(OWLOntology owlOntology, OWLClass owlClass) {
 		Set<String> result = new HashSet<String>();
-		for(OWLAnnotationAssertionAxiom axiom : EntitySearcher.getAnnotationAssertionAxioms(owlClass, owlOntology)) {
+		for(OWLAnnotationAssertionAxiom axiom : EntitySearcher.getAnnotationAssertionAxioms(owlClass, owlOntology).collect(Collectors.toSet())) {
 			if(axiom.getProperty().equals(exactSynonymProperty) || axiom.getProperty().equals(broadSynonymProperty) || axiom.getProperty().equals(narrowSynonymProperty) || 
 					axiom.getProperty().equals(relatedSynonymProperty) || axiom.getProperty().equals(synonymProperty)) {
 				OWLAnnotationValue annotationValue = axiom.getValue();
