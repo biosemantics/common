@@ -7,8 +7,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -38,6 +40,7 @@ public class OntologyAccess {
 	private OWLDataFactory owlDataFactory;
 	private HashMap<OWLOntology, OWLReasoner> ontologyReasonerMap;
 	private OWLObjectProperty partof;
+	private OWLObjectProperty haspart;
 	
 	public OntologyAccess(Set<OWLOntology> ontologies) {
 		this.ontologies = ontologies;
@@ -45,6 +48,7 @@ public class OntologyAccess {
 		OWLOntologyManager owlOntologyManager = OWLManager.createOWLOntologyManager();
 		owlDataFactory = owlOntologyManager.getOWLDataFactory();
 		partof = owlDataFactory.getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/BFO_0000050"));
+		haspart = owlDataFactory.getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/BFO_0000051"));
 		
 		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
 		ontologyReasonerMap = new HashMap<OWLOntology, OWLReasoner>();
@@ -78,7 +82,7 @@ public class OntologyAccess {
 		Set<OWLAnnotation> result = new HashSet<OWLAnnotation>();
 		for(OWLOntology ontology : ontologies){
 			//result.addAll(owlClass.getAnnotations(ontology, owlDataFactory.getOWLAnnotationProperty(iri)));
-			result.addAll(EntitySearcher.getAnnotations(iri, ontology).collect(Collectors.toSet()));
+			result.addAll(EntitySearcher.getAnnotationObjects(owlClass, ontology, owlDataFactory.getOWLAnnotationProperty(iri)).collect(Collectors.toSet()));
 		}
 		return result;
 	}
@@ -111,16 +115,43 @@ public class OntologyAccess {
 		return result;
 	}
 	
+	/**
+	 * getParts and getBearers may not find all part relationships (even when using the reasoner)
+	 * when ontologies don't supply reciprical relations consistently while using part_of and has_part relations are seperate relations (not inverse of each other --they are inverse relations strictly speaking)
+	 * @param owlClass
+	 * @return owlClass that has_part argument owlclass
+	 */
 	public Set<OWLClass> getBearers(OWLClass owlClass) {
 		Set<OWLClass> result = new HashSet<OWLClass>();
 		for(OWLReasoner reasoner : ontologyReasonerMap.values()) {
-			OWLClassExpression partOfClass = owlDataFactory.getOWLObjectSomeValuesFrom(partof, owlClass);
-			NodeSet<OWLClass> bearerNodes = reasoner.getSubClasses(partOfClass, false);
+			OWLClassExpression bearersClass = owlDataFactory.getOWLObjectSomeValuesFrom(haspart, owlClass);// ? has_part some owlclass
+			NodeSet<OWLClass> bearerNodes = reasoner.getSubClasses(bearersClass, false);
 			
 			for(Node<OWLClass> bearerNode : bearerNodes) {
 				OWLClass bearer = bearerNode.getRepresentativeElement();
 				if(!bearer.isBottomEntity() && !bearer.isTopEntity())
 					result.add(bearer);
+			}
+				
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param owlClass
+	 * @return owlClass that are part_of argument owlclass
+	 */
+	public Set<OWLClass> getParts(OWLClass owlClass) {
+		Set<OWLClass> result = new HashSet<OWLClass>();
+		for(OWLReasoner reasoner : ontologyReasonerMap.values()) {
+			OWLClassExpression partClass = owlDataFactory.getOWLObjectSomeValuesFrom(partof, owlClass);//// ? part_of some owlclass
+			NodeSet<OWLClass> partNodes = reasoner.getSubClasses(partClass, false);
+			
+			for(Node<OWLClass> partNode : partNodes) {
+				OWLClass part = partNode.getRepresentativeElement();
+				if(!part.isBottomEntity() && !part.isTopEntity())
+					result.add(part);
 			}
 				
 		}
@@ -153,8 +184,10 @@ public class OntologyAccess {
 	public IRI getIRIForLabel(String label) {
 		for(OWLOntology ontology : ontologies) {
 			for (OWLClass owlClass : ontology.classesInSignature().collect(Collectors.toSet())) {
-				Collection <OWLAnnotation> annotations = EntitySearcher.getAnnotations(owlDataFactory.getRDFSLabel(), ontology).collect(Collectors.toSet());
-				for (OWLAnnotation annotation : annotations) {
+				Stream<OWLAnnotation> annotationStream = EntitySearcher.getAnnotationObjects(owlClass, ontology, owlDataFactory.getRDFSLabel());
+				Iterator<OWLAnnotation> it = annotationStream.iterator();
+				while(it.hasNext()){
+					OWLAnnotation annotation = it.next();
 					if (annotation.getValue() instanceof OWLLiteral) {
 						OWLLiteral val = (OWLLiteral) annotation.getValue();
 						if(val.getLiteral().equals(label)) {
@@ -171,9 +204,9 @@ public class OntologyAccess {
 	public static void main(String[] args) {
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		OWLOntologyManager owlOntologyManager = OWLManager.createOWLOntologyManager();
-		OWLDataFactory owlDataFactory = owlOntologyManager.getOWLDataFactory();
+		//OWLDataFactory df = owlOntologyManager.getOWLDataFactory();
 		
-		File ontologyDirectory = new File("C:/Users/rodenhausen/etcsite/ontologies");
+		File ontologyDirectory = new File("C:/Users/hongcui/Documents/etcsite/resources/shared/ontologies");
 		for(File ontologyFile : ontologyDirectory.listFiles()) {
 			try {
 				OWLOntology ontology = owlOntologyManager.loadOntologyFromOntologyDocument(ontologyFile);
@@ -183,6 +216,58 @@ public class OntologyAccess {
 			}
 		}
 		OntologyAccess ontologyAccess = new OntologyAccess(ontologies);
-		System.out.println(ontologyAccess.getIRIForLabel("axil"));
+		//test case 1
+		System.out.println("red IRI = "+ontologyAccess.getIRIForLabel("red"));
+		
+		//test case 2
+		System.out.println();
+		System.out.println("OWL Entity of red = " +ontologyAccess.getOWLEntityForIRI("http://purl.obolibrary.org/obo/PATO_0000322"));
+					
+		OWLEntity anther = ontologyAccess.getOWLEntityForIRI("http://purl.obolibrary.org/obo/PO_0009066");
+		//test case 3	
+		Set<OWLClass> ancestors = ontologyAccess.getAncestors((OWLClass)anther);
+		int i = 0;
+		System.out.println();
+		System.out.println("anther's superclasses include: ");
+		for(OWLClass ancestor: ancestors){
+			System.out.println((i++)+". "+ontologyAccess.getLabel(ancestor));
+		}
+		
+		//test case 4
+		Set<OWLClass> descendants = ontologyAccess.getDescendants((OWLClass)anther);
+		i = 0;
+		System.out.println();
+		System.out.println("anther's subclasses include: ");
+		for(OWLClass descendant: descendants){
+			System.out.println((i++)+". "+ontologyAccess.getLabel(descendant));
+		}
+
+		//test case 5
+		//anther (0009066) part_of stamen (0009029) part_of  androecium (0009061)
+		Set<OWLClass> parents = ontologyAccess.getBearers((OWLClass)anther);
+		i = 0;
+		System.out.println();
+		System.out.println("anther is part of : ");
+		for(OWLClass parent: parents){
+			System.out.println((i++)+". "+ontologyAccess.getLabel(parent));
+		}
+
+		OWLEntity fruit = ontologyAccess.getOWLEntityForIRI("http://purl.obolibrary.org/obo/PO_0009001");
+		parents = ontologyAccess.getBearers((OWLClass)fruit);
+		i = 0;
+		System.out.println();
+		System.out.println("fruit is part of : ");
+		for(OWLClass parent: parents){
+			System.out.println((i++)+". "+ontologyAccess.getLabel(parent));
+		}
+		
+		//test case 6
+		Set<OWLClass> parts = ontologyAccess.getParts((OWLClass)anther);
+		i = 0;
+		System.out.println();
+		System.out.println("anther has following parts: ");
+		for(OWLClass part: parts){
+			System.out.println((i++)+". "+ontologyAccess.getLabel(part));
+		}
 	}
 }

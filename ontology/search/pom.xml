@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 	<artifactId>search</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.28-SNAPSHOT</version>
+	<version>0.0.29-SNAPSHOT</version>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -33,9 +33,46 @@
 			<id>playground-snapshots</id>
 			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
+		<repository>
+			<id>playground-thirdparty</id>
+			<url>http://128.196.105.149:8081/nexus/content/repositories/thirdparty/</url>
+		</repository>
+		<repository>
+			<id>mvnrepository</id>
+			<url>https://mvnrepository.com/artifact/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
+	<!-- google-collections conflicts with owlapi-distribution, when included, cause a noSuchMethod error in guava  -->
+	<!-- https://mvnrepository.com/artifact/com.google.collections/google-collections -->
+<!-- <dependency> -->
+<!--     <groupId>com.google.collections</groupId> -->
+<!--     <artifactId>google-collections</artifactId> -->
+<!--     <version>1.0</version> -->
+<!-- </dependency> -->
+
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>20.0</version>
+</dependency>
+
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>20.0</version>
+    <classifier>sources</classifier>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+<dependency>
+    <groupId>com.google.code.findbugs</groupId>
+    <artifactId>jsr305</artifactId>
+    <version>3.0.1</version>
+</dependency>
+
+	
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -52,25 +89,19 @@
 			<version>1.7.25</version>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
 			<version>0.0.4-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jackson-core-asl</artifactId>
+					<groupId>org.codehaus.jackson</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-mapper-asl</artifactId>
+					<groupId>org.codehaus.jackson</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
@@ -81,12 +112,34 @@
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
 		  <version>0.0.11-SNAPSHOT</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>jackson-core-asl</artifactId>
+		  		<groupId>org.codehaus.jackson</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>jackson-mapper-asl</artifactId>
+		  		<groupId>org.codehaus.jackson</groupId>
+		  	</exclusion>
+		  </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.semanticweb.elk</groupId>
 			<artifactId>elk-owlapi</artifactId>
-			<version>0.4.3</version>
+			<version>elk-distribution-owlapi5-0.5.0</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.liveontologies/puli -->
+<dependency>
+    <groupId>org.liveontologies</groupId>
+    <artifactId>puli</artifactId>
+    <version>0.1.0</version>
+</dependency>
+<dependency>
+    <groupId>com.unknown.usedbyelk</groupId>
+    <artifactId>owlapi-proof</artifactId>
+    <version>0.1.0</version>
+</dependency>
 	</dependencies>
 
 	<build>
