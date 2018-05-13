@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>enhance</artifactId>
-			<version>0.0.23-SNAPSHOT</version>
+			<version>0.0.26-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
