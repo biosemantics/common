@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.common</groupId>
 	<artifactId>ling</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.20-SNAPSHOT</version>
+	<version>0.0.21-SNAPSHOT</version>
 
 	<properties>
 		<!--<gwtVersion>2.8.0</gwtVersion> don't use GWT?-->
