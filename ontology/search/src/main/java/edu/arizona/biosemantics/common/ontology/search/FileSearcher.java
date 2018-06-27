@@ -52,7 +52,7 @@ public class FileSearcher implements Searcher {
 		List<OntologyEntry> result = new ArrayList<OntologyEntry>();
 		
 		TermSearcher termSearcher = new TermSearcher(ontologyLookupClient);
-		ArrayList<FormalConcept> concepts = termSearcher.searchTerm(term, Type.QUALITY.toString().toLowerCase());
+		ArrayList<FormalConcept> concepts = termSearcher.searchTerm(term, Type.QUALITY.toString().toLowerCase(), 1.0f);
 		if(concepts != null)
 			for(FormalConcept concept : concepts) 
 				result.add(new OntologyEntry(ontology, concept.getClassIRI(), Type.QUALITY, concept.getConfidenceScore(), concept.getLabel(), concept.getPLabel()));
@@ -65,13 +65,15 @@ public class FileSearcher implements Searcher {
 	public static void main(String[] args) {
 		FileSearcher fileSearcher = new FileSearcher(Ontology.PO, "C:/Users/hongcui/Documents/etcsite/resources/shared/ontologies",
 				"C:/Users/hongcui/Documents/etcsite/resources/shared/wordnet/wn31/dict");
-		String term = "blade";//"lamina";//"blade";
-		String parent = "leaf";
+		String term = "embryo proper";//"plant proper";//"leaf blade";[has two matches]////"lamina";//"blade";
+		String parent = ""; //leaf
 		List<OntologyEntry> entries = fileSearcher.getEntityEntries(term, "", "");
 		//List<OntologyEntry> entries = fileSearcher.getEntityEntries(term, parent, "of");
 		System.out.println("Find matches: "+entries.size());
 		for(OntologyEntry entry : entries) {
 			System.out.println(term +"/"+parent+" has an ID: "+entry.getClassIRI());
+			System.out.println(term +"/"+parent+" has label: "+entry.getLabel());
+			System.out.println(term +"/"+parent+" has match score: "+entry.getScore());
 		}
 	}
 }
