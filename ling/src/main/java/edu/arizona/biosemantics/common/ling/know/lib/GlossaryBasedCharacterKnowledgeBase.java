@@ -383,7 +383,7 @@ public class GlossaryBasedCharacterKnowledgeBase implements ICharacterKnowledgeB
 		IInflector inflector = new SomeInflector(wordNetPOSKnowledgeBase, singularPluralProvider.getSingulars(), singularPluralProvider.getPlurals());
 		IGlossary glossary = new InMemoryGlossary();
 		
-		OTOGlossaryInitializer initializer = new OTOGlossaryInitializer("http://biosemantics.arizona.edu:8080/OTO", inflector, taxonGroup);
+		OTOGlossaryInitializer initializer = new OTOGlossaryInitializer("C://Users//hongcui//Documents//etcsite//resources//shared//glossaries", inflector, taxonGroup);
 		initializer.initialize(glossary);
 		
 		ICharacterKnowledgeBase characterKnowledgeBase = new GlossaryBasedCharacterKnowledgeBase(glossary, 

@@ -1,5 +1,8 @@
 package edu.arizona.biosemantics.common.ling.know.lib;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.concurrent.Future;
 
@@ -14,14 +17,22 @@ import edu.arizona.biosemantics.oto.model.GlossaryDownload;
 import edu.arizona.biosemantics.oto.model.TermCategory;
 import edu.arizona.biosemantics.oto.model.TermSynonym;
 
+
 public class OTOGlossaryInitializer implements GlossaryInitializer {
 
-	private String otoClientUrl;
+	//private String otoClientUrl;
 	private IInflector inflector;
 	private TaxonGroup taxonGroup;
+	private String glossaryDir;
 
-	public OTOGlossaryInitializer(String otoClientUrl, IInflector inflector, TaxonGroup taxonGroup) {
+	/*public OTOGlossaryInitializer(String otoClientUrl, IInflector inflector, TaxonGroup taxonGroup) {
 		this.otoClientUrl = otoClientUrl;
+		this.inflector = inflector;
+		this.taxonGroup = taxonGroup;
+	}*/
+	
+	public OTOGlossaryInitializer(String glossaryDir, IInflector inflector, TaxonGroup taxonGroup) {
+		this.glossaryDir = glossaryDir;
 		this.inflector = inflector;
 		this.taxonGroup = taxonGroup;
 	}
@@ -31,7 +42,7 @@ public class OTOGlossaryInitializer implements GlossaryInitializer {
 	}
 
 	public void initialize(IGlossary glossary) throws Exception {
-		OTOClient otoClient = new OTOClient(otoClientUrl);
+		/*OTOClient otoClient = new OTOClient(otoClientUrl);
 		GlossaryDownload glossaryDownload = new GlossaryDownload();		
 		String glossaryVersion = "latest";
 		otoClient.open();
@@ -43,8 +54,12 @@ public class OTOGlossaryInitializer implements GlossaryInitializer {
 			log(LogLevel.ERROR, "Can't download oto glossary", e);
 		} finally {
 			otoClient.close();
-		}
-				
+		}*/
+		ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(glossaryDir + File.separator +
+				"GlossaryDownload." + taxonGroup.getDisplayName() + ".ser"));
+		GlossaryDownload glossaryDownload = (GlossaryDownload) objectIn.readObject();
+		objectIn.close();
+		
 		//add the syn set of the glossary
 		HashSet<Term> gsyns = new HashSet<Term>();
 		for(TermSynonym termSyn: glossaryDownload.getTermSynonyms()){
