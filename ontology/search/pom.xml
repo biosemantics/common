@@ -4,7 +4,8 @@
 	<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 	<artifactId>search</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.30-SNAPSHOT</version>
+	<version>0.0.31-SNAPSHOT</version>
+	<!-- this is updated from 0.0.30-author. author branch not used anymore -->
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -106,7 +107,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-common</artifactId>
-			<version>0.0.30-SNAPSHOT</version>
+			<version>0.0.35-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>

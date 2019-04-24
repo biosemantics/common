@@ -125,13 +125,16 @@ public class OntologyAccess {
 		Set<OWLClass> result = new HashSet<OWLClass>();
 		for(OWLReasoner reasoner : ontologyReasonerMap.values()) {
 			OWLClassExpression bearersClass = owlDataFactory.getOWLObjectSomeValuesFrom(haspart, owlClass);// ? has_part some owlclass
-			NodeSet<OWLClass> bearerNodes = reasoner.getSubClasses(bearersClass, false);
-			
-			for(Node<OWLClass> bearerNode : bearerNodes) {
-				OWLClass bearer = bearerNode.getRepresentativeElement();
-				if(!bearer.isBottomEntity() && !bearer.isTopEntity())
-					result.add(bearer);
-			}
+			//if(bearersClass.compareTo(owlClass)!=0){
+				//has_part in some ontologies is defined as reflective, this is problematic: physical entity has_part physical entity => physical entity has_part all subclasses of physical entity => all subclasses physical entity are its subclasses and also its part.  
+				NodeSet<OWLClass> bearerNodes = reasoner.getSubClasses(bearersClass, false);
+				
+				for(Node<OWLClass> bearerNode : bearerNodes) {
+					OWLClass bearer = bearerNode.getRepresentativeElement();
+					if(!bearer.isBottomEntity() && !bearer.isTopEntity())
+						result.add(bearer);
+				}
+			//}
 				
 		}
 		return result;
@@ -200,7 +203,7 @@ public class OntologyAccess {
 		return null;
 	}
 	
-	
+
 	public static void main(String[] args) {
 		Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
 		OWLOntologyManager owlOntologyManager = OWLManager.createOWLOntologyManager();

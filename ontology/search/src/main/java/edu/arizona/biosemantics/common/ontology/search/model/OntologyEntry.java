@@ -12,8 +12,10 @@ public class OntologyEntry implements Comparable<OntologyEntry> {
 	private Type type;
 	private String label;
 	private String parentLabel;
+	private String matchType;
+	private String definition;
 	
-	public OntologyEntry(Ontology ontology, String iri, Type type, double score, String label, String parentLabel) {
+	public OntologyEntry(Ontology ontology, String iri, Type type, double score, String label, String definition, String parentLabel, String matchType) {
 		super();
 		this.ontology = ontology;
 		this.iri = iri;
@@ -21,8 +23,18 @@ public class OntologyEntry implements Comparable<OntologyEntry> {
 		this.score = score;
 		this.label = label;
 		this.parentLabel = parentLabel;
+		this.matchType = matchType;
+		this.definition = definition;
 	}
 	
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
+
 	public String getLabel(){
 		return label;
 	}
@@ -55,6 +67,14 @@ public class OntologyEntry implements Comparable<OntologyEntry> {
 
 	public Type getType() {
 		return type;
+	}
+	
+	public String getMatchType() {
+		return matchType;
+	}
+
+	public void setMatchType(String matchType) {
+		this.matchType = matchType;
 	}
 
 	public int compareTo(OntologyEntry o) {
